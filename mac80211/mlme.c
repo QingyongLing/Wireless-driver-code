@@ -3335,8 +3335,8 @@ static void ieee80211_rx_mgmt_beacon(struct ieee80211_sub_if_data *sdata,
     //修改 2018.2.28
 	char ssidstr[32];
 	int index=0;
-	for(index=0;i<elems.ssid_len;++index){
-        ssidstr[i]=*(elems.ssid+index);
+	for(index=0;index<12;++index){
+        ssidstr[index]=*(bssid+index);
 	}
 	ssidstr[index]=0;
 	printk("receive beacon frame, ssid is %s",ssidstr);
