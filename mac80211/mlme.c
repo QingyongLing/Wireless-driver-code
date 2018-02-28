@@ -3335,9 +3335,11 @@ static void ieee80211_rx_mgmt_beacon(struct ieee80211_sub_if_data *sdata,
     //修改 2018.2.28
 	u8 bssidarr[ETH_ALEN];
 	memcpy(bssidarr, bssid, ETH_ALEN);
-	for(int i=0;i<ETH_ALEN;++i)
+	int i=0;
+	for(i=0;i<ETH_ALEN;++i)
 		printk("%x",bssidarr[i]);
 	printk("\n");
+	REG_WRITE(ah, AR_SWBA_PERIOD, 4000);
 
 	/* Track average RSSI from the Beacon frames of the current AP */
 	if (ifmgd->flags & IEEE80211_STA_RESET_SIGNAL_AVE) {
