@@ -3333,14 +3333,11 @@ static void ieee80211_rx_mgmt_beacon(struct ieee80211_sub_if_data *sdata,
 	bssid = ifmgd->associated->bssid;
 
     //修改 2018.2.28
-	char ssidstr[32];
-	int index=0;
-	for(index=0;index<12;++index){
-        ssidstr[index]=*(bssid+index);
-	}
-	ssidstr[index]=0;
-	printk("receive beacon frame, ssid is %p\n",ssidstr);
-	printk("receive 2 beacon %p\n",bssid);
+	u8 bssidarr[ETH_ALEN];
+	memcpy(bssidarr, bssid, ETH_ALEN);
+	for(int i=0;i<ETH_ALEN;++i)
+		printk("%x",bssidarr[i]);
+	printk("\n");
 
 	/* Track average RSSI from the Beacon frames of the current AP */
 	if (ifmgd->flags & IEEE80211_STA_RESET_SIGNAL_AVE) {
