@@ -25,6 +25,7 @@ void tdma_tasklet(unsigned long data)
         ++count;
         printk("SWBA activate--------------------%d\n",count);
         if(count==1000)count=0;
+        ah->imask &= ~ATH9K_INT_SWBA;
     }
     
 }
