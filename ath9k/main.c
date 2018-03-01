@@ -2642,7 +2642,7 @@ void tdma_set_SWBA(struct ieee80211_hw *hw,int period){
 	ath9k_hw_disable_interrupts(ah);
 	flags |=AR_SWBA_TIMER_EN;
 	ah->imask |= ATH9K_INT_SWBA;
-	REG_WRITE(ah, AR_NEXT_SWBA, 0);
+	//REG_WRITE(ah, AR_NEXT_SWBA, period);
     REG_WRITE(ah, AR_SWBA_PERIOD, period);
 	REGWRITE_BUFFER_FLUSH(ah);
 	REG_SET_BIT(ah, AR_TIMER_MODE, flags);
