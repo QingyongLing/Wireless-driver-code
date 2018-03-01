@@ -3339,7 +3339,12 @@ static void ieee80211_rx_mgmt_beacon(struct ieee80211_sub_if_data *sdata,
 	for(i=0;i<ETH_ALEN;++i)
 		printk("%x",bssidarr[i]);
 	printk("\n");
-	tdma_set_SWBA(&(local->hw),4000);
+	struct ieee80211_ops *tempops=local->ops;
+	if(tempops->set_SWBA){
+		tempops->set_SWBA(&(local->hw),4000)
+	}else{
+        printk("-----set_SWBA is NULL-----\n")
+	}
 
 	/* Track average RSSI from the Beacon frames of the current AP */
 	if (ifmgd->flags & IEEE80211_STA_RESET_SIGNAL_AVE) {
