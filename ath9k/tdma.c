@@ -9,6 +9,7 @@ void tdma_tasklet(unsigned long data)
     struct ieee80211_hw *hw=sc->hw;
     struct ath_hw *ah=sc->sc_ah;
     //struct ieee80211_local *local = hw_to_local(hw);
+    printk("tdma_tasklet scheduled\n");
     if(ah->opmode==NL80211_IFTYPE_AP){
         ++slot;
         if(slot==1){
@@ -20,7 +21,10 @@ void tdma_tasklet(unsigned long data)
             //printk("-----------------------------\n");
         }
     }else if(ah->opmode==NL80211_IFTYPE_STATION){
-        printk("SWBA activate--------------------\n");
+        static int count=0;
+        ++count;
+        printk("SWBA activate--------------------%d\n",count);
+        if(count==1000)count=0;
     }
     
 }
