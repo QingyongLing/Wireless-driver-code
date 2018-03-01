@@ -2637,8 +2637,13 @@ static int ath9k_get_txpower(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 void tdma_set_SWBA(struct ieee80211_hw *hw,int period){
     struct ath_softc *sc = hw->priv;
     struct ath_hw *ah=sc->sc_ah;
+	int flag=0;
+	flags |=AR_SWBA_TIMER_EN;
+	ah->imask |= ATH9K_INT_SWBA;
     REG_WRITE(ah, AR_SWBA_PERIOD, period);
 	REGWRITE_BUFFER_FLUSH(ah);
+	REG_SET_BIT(ah, AR_TIMER_MODE, flags);
+	printk("Set SWBA\n");
 }
 
 struct ieee80211_ops ath9k_ops = {
