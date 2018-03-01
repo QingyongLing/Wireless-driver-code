@@ -2639,12 +2639,15 @@ void tdma_set_SWBA(struct ieee80211_hw *hw,int period){
     struct ath_hw *ah=sc->sc_ah;
 	int flags=0;
 	u64 tsf=0;
+	ath9k_hw_disable_interrupts(ah);
 	flags |=AR_SWBA_TIMER_EN;
 	ah->imask |= ATH9K_INT_SWBA;
 	REG_WRITE(ah, AR_NEXT_SWBA, 0);
     REG_WRITE(ah, AR_SWBA_PERIOD, period);
 	REGWRITE_BUFFER_FLUSH(ah);
 	REG_SET_BIT(ah, AR_TIMER_MODE, flags);
+	ath9k_hw_set_interrupts(ah);
+	ath9k_hw_enable_interrupts(ah);
 	tsf = ath9k_hw_gettsf64(ah);
 	printk("Set SWBA at tsf %llu\n",tsf);
 }
