@@ -21,12 +21,12 @@ void tdma_tasklet(unsigned long data)
         }
     }else if(ah->opmode==NL80211_IFTYPE_STATION){
         static int count=0;
+        ah->imask &= ~ATH9K_INT_SWBA;
         ++count;
         u64 tsf=0;
         tsf = ath9k_hw_gettsf64(ah);
         printk("SWBA activate %d times at %llu\n",count,tsf);
-        if(count==1000)count=0;
-        ah->imask &= ~ATH9K_INT_SWBA;
+        if(count==1000)count=0;      
     }
     
 }
