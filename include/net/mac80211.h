@@ -3365,7 +3365,7 @@ enum ieee80211_reconfig_type {
  */
 struct ieee80211_ops {
 	//修改 2018.3.1
-	void (*set_SWBA*)(struct ieee80211_hw *local,int period);
+	void (*set_SWBA)(struct ieee80211_hw *hw,int period);
 	void (*tx)(struct ieee80211_hw *hw,
 		   struct ieee80211_tx_control *control,
 		   struct sk_buff *skb);

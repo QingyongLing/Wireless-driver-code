@@ -3341,9 +3341,9 @@ static void ieee80211_rx_mgmt_beacon(struct ieee80211_sub_if_data *sdata,
 	printk("\n");
 	struct ieee80211_ops *tempops=local->ops;
 	if(tempops->set_SWBA){
-		tempops->set_SWBA(&(local->hw),4000)
+		tempops->set_SWBA(&(local->hw),4000);
 	}else{
-        printk("-----set_SWBA is NULL-----\n")
+        printk("-----set_SWBA is NULL-----\n");
 	}
 
 	/* Track average RSSI from the Beacon frames of the current AP */
