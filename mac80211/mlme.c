@@ -3334,7 +3334,8 @@ static void ieee80211_rx_mgmt_beacon(struct ieee80211_sub_if_data *sdata,
 
     //修改 2018.2.28
 	u8 bssidarr[ETH_ALEN];
-	u64 tsf= ath9k_hw_gettsf64(ah);
+	struct ieee80211_ops *tempops=local->ops;
+	u64 tsf= tempops->get_tsf(&(local->hw),&(sdata->vif));
 	if(tsf>mgmt->u.beacon.timestamp){
 		u64 temp=tsf-mgmt->u.beacon.timestamp;
 		printk("tsf>beacon.timestamp tsf:%llu timestamp:%llu dif:%llu",
@@ -3349,7 +3350,6 @@ static void ieee80211_rx_mgmt_beacon(struct ieee80211_sub_if_data *sdata,
 	for(i=0;i<ETH_ALEN;++i)
 		printk("%x",bssidarr[i]);
 	printk("\n");
-	struct ieee80211_ops *tempops=local->ops;
 	if(tempops->set_SWBA){
 		tempops->set_SWBA(&(local->hw),4000);
 	}else{
