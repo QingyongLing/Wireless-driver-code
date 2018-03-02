@@ -3334,6 +3334,16 @@ static void ieee80211_rx_mgmt_beacon(struct ieee80211_sub_if_data *sdata,
 
     //修改 2018.2.28
 	u8 bssidarr[ETH_ALEN];
+	u64 tsf= ath9k_hw_gettsf64(ah);
+	if(tsf>mgmt->u.beacon.timestamp){
+		u64 temp=tsf-mgmt->u.beacon.timestamp;
+		printk("tsf>beacon.timestamp tsf:%llu timestamp:%llu dif:%llu",
+		tsf,mgmt->u.beacon.timestamp,temp);
+	}else{
+		u64 temp=mgmt->u.beacon.timestamp-tsf;
+		printk("tsf<=beacon.timestamp tsf:%llu timestamp:%llu dif:%llu",
+		tsf,mgmt->u.beacon.timestamp,temp);
+	}
 	memcpy(bssidarr, bssid, ETH_ALEN);
 	int i=0;
 	for(i=0;i<ETH_ALEN;++i)
