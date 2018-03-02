@@ -3336,14 +3336,15 @@ static void ieee80211_rx_mgmt_beacon(struct ieee80211_sub_if_data *sdata,
 	u8 bssidarr[ETH_ALEN];
 	struct ieee80211_ops *tempops=local->ops;
 	u64 tsf= tempops->get_tsf(&(local->hw),&(sdata->vif));
-	if(tsf>mgmt->u.beacon.timestamp){
-		u64 temp=tsf-mgmt->u.beacon.timestamp;
+	u64 timestamp=le64_to_cpu(mgmt->u.beacon.timestamp);
+	if(tsf>timestamp){
+		u64 temp=tsf-timestamp;
 		printk("tsf>beacon.timestamp tsf:%llu timestamp:%llu dif:%llu",
-		tsf,mgmt->u.beacon.timestamp,temp);
+		tsf,timestamp,temp);
 	}else{
-		u64 temp=mgmt->u.beacon.timestamp-tsf;
+		u64 temp=timestamp-tsf;
 		printk("tsf<=beacon.timestamp tsf:%llu timestamp:%llu dif:%llu",
-		tsf,mgmt->u.beacon.timestamp,temp);
+		tsf,timestamp,temp);
 	}
 	memcpy(bssidarr, bssid, ETH_ALEN);
 	int i=0;
