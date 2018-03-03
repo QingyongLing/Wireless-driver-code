@@ -2973,8 +2973,6 @@ void ath9k_hw_settsf64(struct ath_hw *ah, u64 tsf64)
 {
 	REG_WRITE(ah, AR_TSF_L32, tsf64 & 0xffffffff);
 	REG_WRITE(ah, AR_TSF_U32, (tsf64 >> 32) & 0xffffffff);
-	//修改 2018.3.3
-	printk("ath9k_hw_settsf64 at %llu\n",tsf64);
 }
 EXPORT_SYMBOL(ath9k_hw_settsf64);
 
