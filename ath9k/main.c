@@ -1851,12 +1851,14 @@ static void ath9k_set_tsf(struct ieee80211_hw *hw,
 			  u64 tsf)
 {
 	struct ath_softc *sc = hw->priv;
-
+    
 	mutex_lock(&sc->mutex);
 	ath9k_ps_wakeup(sc);
 	ath9k_hw_settsf64(sc->sc_ah, tsf);
 	ath9k_ps_restore(sc);
 	mutex_unlock(&sc->mutex);
+	//修改 测试 2018.3.3
+	printk("change tsf called %llu",tsf);
 }
 
 static void ath9k_reset_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
