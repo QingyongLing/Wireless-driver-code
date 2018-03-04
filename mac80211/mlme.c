@@ -3503,7 +3503,10 @@ static void ieee80211_rx_mgmt_beacon(struct ieee80211_sub_if_data *sdata,
 	 * the driver will use them. The synchronized view is currently
 	 * guaranteed only in certain callbacks.
 	 */
+	 //修改 2018.3.4
+	 printk("----------------------------\n");
 	if (ieee80211_hw_check(&local->hw, TIMING_BEACON_ONLY)) {
+		printk("**********************************\n");
 		sdata->vif.bss_conf.sync_tsf =
 			le64_to_cpu(mgmt->u.beacon.timestamp);
 		sdata->vif.bss_conf.sync_device_ts =
