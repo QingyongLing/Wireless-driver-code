@@ -3324,6 +3324,10 @@ static void ieee80211_rx_mgmt_beacon(struct ieee80211_sub_if_data *sdata,
 		ifmgd->assoc_data->timeout = jiffies;
 		ifmgd->assoc_data->timeout_started = true;
 		run_again(sdata, ifmgd->assoc_data->timeout);
+		//修改 2018.3.4 
+		u64 tsf= tempops->get_tsf(&(local->hw),&(sdata->vif));
+    	u64 timestamp=le64_to_cpu(mgmt->u.beacon.timestamp);
+		printk("associate with an AP,tsf is %llu beacon timestamp is %llu \n",tsf,timestamp);
 		return;
 	}
 
