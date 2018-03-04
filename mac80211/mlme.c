@@ -3504,9 +3504,6 @@ static void ieee80211_rx_mgmt_beacon(struct ieee80211_sub_if_data *sdata,
 	 * guaranteed only in certain callbacks.
 	 */
 	if (ieee80211_hw_check(&local->hw, TIMING_BEACON_ONLY)) {
-		//修改 2018.3.4
-		printk("set sync_tsf called \n");
-		mgmt->u.beacon.timestamp=10000000;
 		sdata->vif.bss_conf.sync_tsf =
 			le64_to_cpu(mgmt->u.beacon.timestamp);
 		sdata->vif.bss_conf.sync_device_ts =
