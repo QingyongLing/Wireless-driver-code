@@ -16,13 +16,13 @@ void tdma_tasklet(unsigned long data)
         if(slot==1){
             if(flag){
                 flag=false;
-                printk("flag is true,slot is %d and tsf is %llu",slot,tsf);
+                printk("flag is true,slot is %d and tsf is %llu\n",slot,tsf);
             }
             ath9k_beacon_tasklet(data);
         }else{
             if(!flag){
                 flag=true;
-                printk("flag is true, slot is %d and tsf is %llu",slot,tsf);
+                printk("flag is false, slot is %d and tsf is %llu\n",slot,tsf);
             }
             tdma_send_data(hw);
             if(slot==50)slot=0;

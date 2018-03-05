@@ -2289,7 +2289,10 @@ EXPORT_SYMBOL(ath9k_hw_setpower);
 void ath9k_hw_beaconinit(struct ath_hw *ah, u32 next_beacon, u32 beacon_period)
 {
 	int flags = 0;
-
+    //修改 2018.3.5
+	u64 tsf = ath9k_hw_gettsf64(ah);
+	printk("ath9k_hw_beaconinit called and tsf=%llu, next_beacon=%lu, beacon_period=%lu\n",
+	     tsf,next_beacon,beacon_period);
     //修改  2018.2.19
 	u32 tdma_beacon=200000;
 	u32 tdma_slot=4000;
