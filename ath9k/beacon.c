@@ -436,6 +436,9 @@ void ath9k_beacon_tasklet(unsigned long data)
 
 		if (!edma)
 			ath9k_hw_txstart(ah, sc->beacon.beaconq);
+		//修改 2018.3.7
+		u64 tsf = ath9k_hw_gettsf64(ah);
+		printk("ath9k_hw_txstart called at %llu\n",tsf);
 	}
 }
 
