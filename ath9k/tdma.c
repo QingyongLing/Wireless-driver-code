@@ -12,17 +12,12 @@ void tdma_tasklet(unsigned long data)
     if(ah->opmode==NL80211_IFTYPE_AP){
         ++slot;
         u64 tsf = ath9k_hw_gettsf64(ah);
-        static bool flag=true;
         if(slot==1){
-            if(flag){
-                flag=false;
-                printk("flag is true,slot is %d and tsf is %llu\n",slot,tsf);
-            }
             ath9k_beacon_tasklet(data);
+            printk("Slot = 1, SWBA is acivate at %llu\n",tsf);
         }else{
-            if(!flag){
-                flag=true;
-                printk("flag is false, slot is %d and tsf is %llu\n",slot,tsf);
+            if(slot==2){
+                printk("Slot = 2, SWBA is acivate at %llu\n",tsf);
             }
             tdma_send_data(hw);
             if(slot==50)slot=0;
