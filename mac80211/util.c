@@ -1090,6 +1090,10 @@ u32 ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
 			else
 				elem_parse_failed = true;
 			break;
+		//修改 2018.3.9
+		case WLAN_EID_SLOT_MAP:
+		    printk("Receive the WLAN_EID_SLOT_MAP----------------\n");
+			break;
 		default:
 			break;
 		}

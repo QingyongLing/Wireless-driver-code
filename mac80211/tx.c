@@ -3490,6 +3490,12 @@ static void __ieee80211_beacon_add_tim(struct ieee80211_sub_if_data *sdata,
 		*pos++ = aid0; /* Bitmap control */
 		*pos++ = 0; /* Part Virt Bitmap */
 	}
+	//修改 2018.3.9
+	 skb_put(skb, 4);
+	 *pos++ = WLAN_EID_SLOT_MAP;
+	 *pos++ = 2;
+	 *pos++ = 1;
+     *pos++ = 1;
 }
 
 static int ieee80211_beacon_add_tim(struct ieee80211_sub_if_data *sdata,

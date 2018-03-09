@@ -1935,6 +1935,8 @@ enum ieee80211_eid {
 
 	WLAN_EID_VENDOR_SPECIFIC = 221,
 	WLAN_EID_QOS_PARAMETER = 222,
+	//修改 2018.3.9  slot information
+	WLAN_EID_SLOT_MAP = 230,
 };
 
 /* Action category code */
