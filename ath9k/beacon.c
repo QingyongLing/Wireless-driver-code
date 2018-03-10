@@ -270,7 +270,11 @@ static int ath9k_beacon_choose_slot(struct ath_softc *sc)
     
 	ath_dbg(common, BEACON, "slot: %d tsf: %llu tsftu: %u\n",
 		slot, tsf, tsftu / ATH_BCBUF);
-	
+	//修改 2018.3.10
+	//我也不知道为什么slot要是0才可以，在改了Beacon的周期之类的寄存器之类的值
+	//的前提下，只有当slot=0的时候vif才不会为NULL，beacon帧才能成功发送出去
+	//所以需要去了解为什么slot是变化的，以及为什么要有slot,暂时只能先设为0
+	slot=0;
 	return slot;
 }
 
