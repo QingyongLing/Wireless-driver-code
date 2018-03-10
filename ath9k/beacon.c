@@ -392,6 +392,7 @@ void ath9k_beacon_tasklet(unsigned long data)
 			printk("enable_beacon is false---------------------\n");
 		}
 	}
+	printk("choose slot is %d\n",slot);
 	if (!vif || !vif->bss_conf.enable_beacon)
 		return;
 
