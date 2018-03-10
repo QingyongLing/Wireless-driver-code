@@ -19,6 +19,9 @@ void tdma_tasklet(unsigned long data)
             if(slot==2){
                 printk("Slot = 2, SWBA is acivate at %llu\n",tsf);
             }
+            if(slot==3){
+                printk("Slot = 3, SWBA is acivate at %llu\n",tsf);
+            }
             tdma_send_data(hw);
             if(slot==50)slot=0;
         }

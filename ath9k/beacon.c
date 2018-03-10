@@ -340,8 +340,6 @@ void ath9k_beacon_tasklet(unsigned long data)
 	 * a problem and should not occur.  If we miss too
 	 * many consecutive beacons reset the device.
 	 */
-	 //修改 2018.3.10
-	printk("send before test ath9k_hw_numtxpending--------1\n");
 	if (ath9k_hw_numtxpending(ah, sc->beacon.beaconq) != 0) {
 		sc->beacon.bmisscnt++;
 
@@ -374,8 +372,7 @@ void ath9k_beacon_tasklet(unsigned long data)
 
 	slot = ath9k_beacon_choose_slot(sc);
 	vif = sc->beacon.bslot[slot];
- //修改 2018.3.10
-	printk("send before test edma--------2\n");
+
 	/* EDMA devices check that in the tx completion function. */
 	if (!edma) {
 		if (ath9k_is_chanctx_enabled()) {
@@ -386,8 +383,15 @@ void ath9k_beacon_tasklet(unsigned long data)
 		if (ath9k_csa_is_finished(sc, vif))
 			return;
 	}
-//修改 2018.3.10
-	printk("send before test enable_beacon--------3\n");
+
+	//修改 2018.3.10
+	if (!vif || !vif->bss_conf.enable_beacon){
+		if(!vif){
+			printk("vif is null -------------------------------\n");
+		}else if(!vif->bss_conf.enable_beacon){
+			printk("enable_beacon is false---------------------\n");
+		}
+	}
 	if (!vif || !vif->bss_conf.enable_beacon)
 		return;
 
