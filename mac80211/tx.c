@@ -3499,7 +3499,7 @@ static void __ieee80211_beacon_add_tim(struct ieee80211_sub_if_data *sdata,
 	 *pos++ = 2;
 	 *pos++ = index;
      *pos++ = 1;
-	 if(index==8){
+	 if(index==200){
 		 index=0;
 	 }
 }
