@@ -1092,8 +1092,10 @@ u32 ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
 			break;
 		//修改 2018.3.9
 		case WLAN_EID_SLOT_MAP:
-		    int index=*pos;
-		    printk("WLAN_EID_SLOT_MAP and index is %d \n",index);
+            {
+				u8 index=*pos;
+		        printk("WLAN_EID_SLOT_MAP and index is %u \n",index);
+			}
 			break;
 		default:
 			break;
