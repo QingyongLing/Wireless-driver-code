@@ -2649,7 +2649,7 @@ void tdma_set_SWBA(struct ieee80211_hw *hw,int period){
 	ath9k_hw_set_interrupts(ah);
 	ath9k_hw_enable_interrupts(ah);
 	tsf = ath9k_hw_gettsf64(ah);
-	printk("Set SWBA at tsf %llu\n",tsf);
+	printk("(1)Set SWBA at tsf %llu\n",tsf);
 }
 
 struct ieee80211_ops ath9k_ops = {

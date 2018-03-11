@@ -31,7 +31,7 @@ void tdma_tasklet(unsigned long data)
         ++count;
         u64 tsf=0;
         tsf = ath9k_hw_gettsf64(ah);
-        printk("SWBA activate %d times at %llu\n",count,tsf);
+        printk("(4)SWBA activate %d times at %llu\n",count,tsf);
         if(count==1000)count=0;      
     }
     

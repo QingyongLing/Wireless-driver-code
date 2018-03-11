@@ -3337,25 +3337,26 @@ static void ieee80211_rx_mgmt_beacon(struct ieee80211_sub_if_data *sdata,
 	struct ieee80211_ops *tempops=local->ops;
 	u64 tsf= tempops->get_tsf(&(local->hw),&(sdata->vif));
 	u64 timestamp=le64_to_cpu(mgmt->u.beacon.timestamp);
+	if(tempops->set_SWBA){
+		tempops->set_SWBA(&(local->hw),4000);
+	}else{
+        printk("-----set_SWBA is NULL-----\n");
+	}
 	if(tsf>timestamp){
 		u64 temp=tsf-timestamp;
-		printk("tsf>beacon.timestamp tsf:%llu timestamp:%llu dif:%llu",
+		printk("(2)tsf>beacon.timestamp tsf:%llu timestamp:%llu dif:%llu",
 		tsf,timestamp,temp);
 	}else{
 		u64 temp=timestamp-tsf;
-		printk("tsf<=beacon.timestamp tsf:%llu timestamp:%llu dif:%llu",
+		printk("(2)tsf<=beacon.timestamp tsf:%llu timestamp:%llu dif:%llu",
 		tsf,timestamp,temp);
 	}
 	memcpy(bssidarr, bssid, ETH_ALEN);
 	int i=0;
 	for(i=0;i<ETH_ALEN;++i)
 		printk("%x",bssidarr[i]);
-	printk("\n");
-	if(tempops->set_SWBA){
-		tempops->set_SWBA(&(local->hw),4000);
-	}else{
-        printk("-----set_SWBA is NULL-----\n");
-	}
+	printk("(3)\n");
+	
 
 	/* Track average RSSI from the Beacon frames of the current AP */
 	if (ifmgd->flags & IEEE80211_STA_RESET_SIGNAL_AVE) {

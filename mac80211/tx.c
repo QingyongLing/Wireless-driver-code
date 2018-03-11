@@ -3492,10 +3492,15 @@ static void __ieee80211_beacon_add_tim(struct ieee80211_sub_if_data *sdata,
 	}
 	//修改 2018.3.9
 	 skb_put(skb, 4);
+	 static int index=0;
+	 ++index;
 	 *pos++ = WLAN_EID_SLOT_MAP;
 	 *pos++ = 2;
-	 *pos++ = 1;
+	 *pos++ = index;
      *pos++ = 1;
+	 if(index==8){
+		 index=0;
+	 }
 }
 
 static int ieee80211_beacon_add_tim(struct ieee80211_sub_if_data *sdata,

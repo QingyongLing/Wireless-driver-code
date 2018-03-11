@@ -388,15 +388,6 @@ void ath9k_beacon_tasklet(unsigned long data)
 			return;
 	}
 
-	//修改 2018.3.10
-	if (!vif || !vif->bss_conf.enable_beacon){
-		if(!vif){
-			printk("vif is null -------------------------------\n");
-		}else if(!vif->bss_conf.enable_beacon){
-			printk("enable_beacon is false---------------------\n");
-		}
-	}
-	printk("choose slot is %d\n",slot);
 	if (!vif || !vif->bss_conf.enable_beacon)
 		return;
 
@@ -437,8 +428,7 @@ void ath9k_beacon_tasklet(unsigned long data)
 		ath9k_hw_init_global_settings(ah);
 		sc->beacon.updateslot = OK;
 	}
-    //修改 2018.3.10
-	printk("send before test bf--------4\n");
+
 	if (bf) {
 		ath9k_reset_beacon_status(sc);
 
@@ -448,11 +438,14 @@ void ath9k_beacon_tasklet(unsigned long data)
 		/* NB: cabq traffic should already be queued and primed */
 		ath9k_hw_puttxbuf(ah, sc->beacon.beaconq, bf->bf_daddr);
 
+        //修改 2018.3.11
+        u64 tsf = ath9k_hw_gettsf64(ah);
+		printk("ath9k_hw_txstart called at %llu\n",tsf);
 		if (!edma)
 			ath9k_hw_txstart(ah, sc->beacon.beaconq);
 		//修改 2018.3.7
-		u64 tsf = ath9k_hw_gettsf64(ah);
-		printk("ath9k_hw_txstart called at %llu\n",tsf);
+		tsf = ath9k_hw_gettsf64(ah);
+		printk("ath9k_hw_txstart called end at %llu\n",tsf);
 	}
 }
 
