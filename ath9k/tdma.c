@@ -12,6 +12,9 @@ void tdma_tasklet(unsigned long data)
     if(ah->opmode==NL80211_IFTYPE_AP){
         ++slot;
         u64 tsf = ath9k_hw_gettsf64(ah);
+        ath9k_beacon_tasklet(data);
+        printk("Slot = %d, SWBA is acivate at %llu\n",slot,tsf);
+        /*
         if(slot==1){
             ath9k_beacon_tasklet(data);
             printk("Slot = 1, SWBA is acivate at %llu\n",tsf);
@@ -25,6 +28,7 @@ void tdma_tasklet(unsigned long data)
             tdma_send_data(hw);
             if(slot==50)slot=0;
         }
+        */
     }else if(ah->opmode==NL80211_IFTYPE_STATION){
         static int count=0;
         ah->imask &= ~ATH9K_INT_SWBA;
