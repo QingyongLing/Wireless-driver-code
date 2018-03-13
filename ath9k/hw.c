@@ -2289,11 +2289,10 @@ EXPORT_SYMBOL(ath9k_hw_setpower);
 void ath9k_hw_beaconinit(struct ath_hw *ah, u32 next_beacon, u32 beacon_period)
 {
 	int flags = 0;
-    //修改 2018.3.5 next_beacon=102400, beacon_period=12800 测试config
     //修改  2018.2.19
 	u32 tdma_beacon=200000;
 	u32 tdma_slot=4000;
-	u32 tdma_tbtt_next=30000000;
+	u32 tdma_tbtt_next=7168;
 
 	ENABLE_REGWRITE_BUFFER(ah);
 
@@ -2304,9 +2303,9 @@ void ath9k_hw_beaconinit(struct ath_hw *ah, u32 next_beacon, u32 beacon_period)
 	case NL80211_IFTYPE_MESH_POINT:
 	case NL80211_IFTYPE_AP:
 	    REG_WRITE(ah, AR_NEXT_TBTT_TIMER, tdma_tbtt_next);//next_beacon);
-		REG_WRITE(ah, AR_NEXT_DMA_BEACON_ALERT, tdma_tbtt_next-2000);//next_beacon -
+		REG_WRITE(ah, AR_NEXT_DMA_BEACON_ALERT, tdma_tbtt_next-1024);//next_beacon -
 			  //TU_TO_USEC(ah->config.dma_beacon_response_time));
-		REG_WRITE(ah, AR_NEXT_SWBA, tdma_tbtt_next-7000);//next_beacon -
+		REG_WRITE(ah, AR_NEXT_SWBA, tdma_tbtt_next-6144);//next_beacon -
 			  //TU_TO_USEC(ah->config.sw_beacon_response_time));
 		flags |=
 			AR_TBTT_TIMER_EN | AR_DBA_TIMER_EN | AR_SWBA_TIMER_EN;
@@ -2323,7 +2322,7 @@ void ath9k_hw_beaconinit(struct ath_hw *ah, u32 next_beacon, u32 beacon_period)
 	//REG_WRITE(ah, AR_SWBA_PERIOD, beacon_period);
 	REG_WRITE(ah, AR_BEACON_PERIOD, tdma_beacon);
 	REG_WRITE(ah, AR_DMA_BEACON_PERIOD, tdma_beacon);
-	REG_WRITE(ah, AR_SWBA_PERIOD, tdma_slot);
+	REG_WRITE(ah, AR_SWBA_PERIOD, tdma_beacon);
 
 	REGWRITE_BUFFER_FLUSH(ah);
 
