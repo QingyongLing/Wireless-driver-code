@@ -2322,7 +2322,7 @@ void ath9k_hw_beaconinit(struct ath_hw *ah, u32 next_beacon, u32 beacon_period)
 	//REG_WRITE(ah, AR_SWBA_PERIOD, beacon_period);
 	REG_WRITE(ah, AR_BEACON_PERIOD, tdma_beacon);
 	REG_WRITE(ah, AR_DMA_BEACON_PERIOD, tdma_beacon);
-	REG_WRITE(ah, AR_SWBA_PERIOD, tdma_beacon);
+	REG_WRITE(ah, AR_SWBA_PERIOD, tdma_slot);
 
 	REGWRITE_BUFFER_FLUSH(ah);
 
