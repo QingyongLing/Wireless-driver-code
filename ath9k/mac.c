@@ -387,22 +387,20 @@ bool ath9k_hw_resettxqueue(struct ath_hw *ah, u32 q)
 
 	ENABLE_REGWRITE_BUFFER(ah);
 
-	
+	/*
 	REG_WRITE(ah, AR_DLCL_IFS(q),
 		  SM(cwMin, AR_D_LCL_IFS_CWMIN) |
 		  SM(qi->tqi_cwmax, AR_D_LCL_IFS_CWMAX) |
 		  SM(qi->tqi_aifs, AR_D_LCL_IFS_AIFS));
-	
+	*/
 	/*修改　2018.1.29
 　　　cwMin=0
 　　　tqi_cwmax=0
 	*/
-	/*
 	REG_WRITE(ah, AR_DLCL_IFS(q),
 		  SM(0, AR_D_LCL_IFS_CWMIN) |
 		  SM(0, AR_D_LCL_IFS_CWMAX) |
 		  SM(qi->tqi_aifs, AR_D_LCL_IFS_AIFS));
-	*/
 	
 	REG_WRITE(ah, AR_DRETRY_LIMIT(q),
 		  SM(INIT_SSH_RETRY, AR_D_RETRY_LIMIT_STA_SH) |
