@@ -1094,7 +1094,8 @@ u32 ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
 		case WLAN_EID_SLOT_MAP:
             {
 				u8 index=*pos;
-		        printk("WLAN_EID_SLOT_MAP and index is %u \n",index);
+				u64 tsf = ath9k_hw_gettsf64(ah);
+		        printk("tsf: %llu WLAN_EID_SLOT_MAP and index is %u\n",tsf,index);
 			}
 			break;
 		default:
