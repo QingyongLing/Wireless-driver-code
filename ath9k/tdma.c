@@ -1,31 +1,41 @@
 //修改 2018.2.19
 #include <net/tdma.h>
 #include "ath9k.h"
+#include <asm/div64.h>
+/*
+mod = do_div(x,y);
+result = x; 
+*/
 
 void tdma_tasklet(unsigned long data)
 {
-    static int slot=0;
     struct ath_softc *sc = (struct ath_softc *)data;
     struct ieee80211_hw *hw=sc->hw;
     struct ath_hw *ah=sc->sc_ah;
     //struct ieee80211_local *local = hw_to_local(hw);
+    //u32 tdma_tbtt_next=106144;  next_swba=100000us
+    //Beacon period is 200000
+    //SWBA period is 4000
     if(ah->opmode==NL80211_IFTYPE_AP){
-        ++slot;
+        static int send_beacon=0;
         u64 tsf = ath9k_hw_gettsf64(ah);
-        if(slot==1){
+        u64 temptsf=tsf;
+        u64 slot= do_div(temptsf,200000);
+        do_div(slot,4000);
+        if(send_beacon==0&&slot<3){
             ath9k_beacon_tasklet(data);
-            printk("Slot = 1, SWBA is acivate at %llu\n",tsf);
-        }else{
-            if(slot==2){
-                printk("Slot = 2, SWBA is acivate at %llu\n",tsf);
+            send_beacon=1;
+            printk("Slot = %llu, beacon_tasklet is acivate at %llu\n",tsf);
+        }
+        if(slot>2){
+            if(send_beacon==0){
+                ath9k_beacon_tasklet(data);
+                send_beacon=1;
+                printk("------------Slot = %llu, beacon_tasklet is acivate at %llu\n",tsf);
+            }else{
+                printk("Slot = %llu, send data is acivate at %llu\n",tsf);
+                tdma_send_data(hw);
             }
-            if(slot==3){
-                printk("Slot = 3, SWBA is acivate at %llu\n",tsf);
-            }
-            /*
-            tdma_send_data(hw);
-            */
-            if(slot==50)slot=0;
         }
     }else if(ah->opmode==NL80211_IFTYPE_STATION){
         static int count=0;
