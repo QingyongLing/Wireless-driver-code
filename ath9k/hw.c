@@ -2292,7 +2292,7 @@ void ath9k_hw_beaconinit(struct ath_hw *ah, u32 next_beacon, u32 beacon_period)
     //修改  2018.2.19
 	u32 tdma_beacon=200000;
 	u32 tdma_slot=4000;
-	u32 tdma_tbtt_next=7168;
+	u32 tdma_tbtt_next=106144;
 
 	ENABLE_REGWRITE_BUFFER(ah);
 
