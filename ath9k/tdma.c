@@ -17,25 +17,18 @@ void tdma_tasklet(unsigned long data)
     //Beacon period is 200000
     //SWBA period is 4000
     if(ah->opmode==NL80211_IFTYPE_AP){
-        static int send_beacon=0;
         u64 tsf = ath9k_hw_gettsf64(ah);
         u64 temptsf=tsf;
         u64 slot= do_div(temptsf,200000);
         do_div(slot,4000);
-        if(send_beacon==0&&slot<3){
+        if(slot<3){
             ath9k_beacon_tasklet(data);
             send_beacon=1;
             printk("Slot = %llu, beacon_tasklet is acivate at %llu\n",slot,tsf);
         }
         if(slot>2){
-            if(send_beacon==0){
-                ath9k_beacon_tasklet(data);
-                send_beacon=1;
-                printk("------------Slot = %llu, beacon_tasklet is acivate at %llu\n",slot,tsf);
-            }else{
-                printk("Slot = %llu, send data is acivate at %llu\n",slot,tsf);
-                tdma_send_data(hw);
-            }
+            printk("Slot = %llu, send data is acivate at %llu\n",slot,tsf);
+            tdma_send_data(hw);
         }
     }else if(ah->opmode==NL80211_IFTYPE_STATION){
         static int count=0;
