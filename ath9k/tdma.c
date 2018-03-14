@@ -25,15 +25,15 @@ void tdma_tasklet(unsigned long data)
         if(send_beacon==0&&slot<3){
             ath9k_beacon_tasklet(data);
             send_beacon=1;
-            printk("Slot = %llu, beacon_tasklet is acivate at %llu\n",tsf);
+            printk("Slot = %llu, beacon_tasklet is acivate at %llu\n",slot,tsf);
         }
         if(slot>2){
             if(send_beacon==0){
                 ath9k_beacon_tasklet(data);
                 send_beacon=1;
-                printk("------------Slot = %llu, beacon_tasklet is acivate at %llu\n",tsf);
+                printk("------------Slot = %llu, beacon_tasklet is acivate at %llu\n",slot,tsf);
             }else{
-                printk("Slot = %llu, send data is acivate at %llu\n",tsf);
+                printk("Slot = %llu, send data is acivate at %llu\n",slot,tsf);
                 tdma_send_data(hw);
             }
         }
