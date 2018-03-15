@@ -3337,11 +3337,13 @@ static void ieee80211_rx_mgmt_beacon(struct ieee80211_sub_if_data *sdata,
 	struct ieee80211_ops *tempops=local->ops;
 	u64 tsf= tempops->get_tsf(&(local->hw),&(sdata->vif));
 	u64 timestamp=le64_to_cpu(mgmt->u.beacon.timestamp);
+	/*
 	if(tempops->set_SWBA){
 		tempops->set_SWBA(&(local->hw),4000);
 	}else{
         printk("-----set_SWBA is NULL-----\n");
 	}
+	*/
 	if(tsf>timestamp){
 		u64 temp=tsf-timestamp;
 		printk("(2)tsf>beacon.timestamp tsf:%llu timestamp:%llu dif:%llu\n",

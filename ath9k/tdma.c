@@ -34,13 +34,14 @@ void tdma_tasklet(unsigned long data)
             tdma_send_data(hw);
         }
     }else if(ah->opmode==NL80211_IFTYPE_STATION){
-        static int count=0;
-        ah->imask &= ~ATH9K_INT_SWBA;
-        ++count;
-        u64 tsf=0;
-        tsf = ath9k_hw_gettsf64(ah);
-        printk("(4)SWBA activate %d times at %llu\n",count,tsf);
-        if(count==1000)count=0;      
+        u64 next_swba=100000;
+        u64 tsf = ath9k_hw_gettsf64(ah);
+        u64 temptsf=tsf-next_swba;
+        u64 slot= do_div(temptsf,200000);
+        do_div(slot,4000);
+        if(slot<3){
+            printk("Slot = %llu, beacon_tasklet is acivate at %llu\n",slot,tsf);
+        }     
     }
     
 }

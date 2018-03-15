@@ -2290,8 +2290,11 @@ void ath9k_hw_beaconinit(struct ath_hw *ah, u32 next_beacon, u32 beacon_period)
 {
 	int flags = 0;
     //修改  2018.2.19
+	//TDMA Period
 	u32 tdma_beacon=200000;
+	//TDMA Slot
 	u32 tdma_slot=4000;
+	//next_swba=tdma_tbtt_next-6TU(6144ms)
 	u32 tdma_tbtt_next=106144;
 
 	ENABLE_REGWRITE_BUFFER(ah);
@@ -2336,9 +2339,18 @@ void ath9k_hw_set_sta_beacon_timers(struct ath_hw *ah,
 	u32 nextTbtt, beaconintval, dtimperiod, beacontimeout;
 	struct ath9k_hw_capabilities *pCap = &ah->caps;
 	struct ath_common *common = ath9k_hw_common(ah);
-
+   
 	ENABLE_REGWRITE_BUFFER(ah);
-
+	//修改 2018.3.15
+	//设定STA模式下的Beacon SWBA定时器
+    //add the same as ath9k_hw_beaconinit function
+	printk("----------STA set SWBA Timer----------\n");
+	u32 tdma_slot=4000;
+	u32 next_swba=100000;
+	ah->imask |= ATH9K_INT_SWBA;
+	REG_WRITE(ah, AR_NEXT_SWBA, next_swba);
+    REG_WRITE(ah, AR_SWBA_PERIOD, tdma_slot);
+	//end
 	REG_WRITE(ah, AR_NEXT_TBTT_TIMER, bs->bs_nexttbtt);
 	REG_WRITE(ah, AR_BEACON_PERIOD, bs->bs_intval);
 	REG_WRITE(ah, AR_DMA_BEACON_PERIOD, bs->bs_intval);
@@ -2388,10 +2400,16 @@ void ath9k_hw_set_sta_beacon_timers(struct ath_hw *ah,
 	REG_WRITE(ah, AR_DTIM_PERIOD, dtimperiod);
 
 	REGWRITE_BUFFER_FLUSH(ah);
-
+    //修改 2018.3.15
+	//启用SWBA定时器
+	REG_SET_BIT(ah, AR_TIMER_MODE,
+		    AR_TBTT_TIMER_EN | AR_TIM_TIMER_EN |
+		    AR_DTIM_TIMER_EN | AR_SWBA_TIMER_EN);
+	/*
 	REG_SET_BIT(ah, AR_TIMER_MODE,
 		    AR_TBTT_TIMER_EN | AR_TIM_TIMER_EN |
 		    AR_DTIM_TIMER_EN);
+	*/
 
 	/* TSF Out of Range Threshold */
 	REG_WRITE(ah, AR_TSFOOR_THRESHOLD, bs->bs_tsfoor_threshold);
