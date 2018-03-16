@@ -1214,7 +1214,7 @@ static void ath_buf_set_rate(struct ath_softc *sc, struct ath_buf *bf,
 		if (rates[i].flags & IEEE80211_TX_RC_40_MHZ_WIDTH){
 			 printk("--------IEEE80211_TX_RC_40_MHZ_WIDTH--------\n");
 		}
-		printk("---------Set MCS index = 6--------\n");
+		//printk("---------Set MCS index = 6--------\n");
 		rix=6;
 
 		/*

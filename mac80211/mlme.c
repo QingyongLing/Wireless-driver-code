@@ -3344,6 +3344,7 @@ static void ieee80211_rx_mgmt_beacon(struct ieee80211_sub_if_data *sdata,
         printk("-----set_SWBA is NULL-----\n");
 	}
 	*/
+	/*
 	if(tsf>timestamp){
 		u64 temp=tsf-timestamp;
 		printk("(2)tsf>beacon.timestamp tsf:%llu timestamp:%llu dif:%llu\n",
@@ -3353,6 +3354,7 @@ static void ieee80211_rx_mgmt_beacon(struct ieee80211_sub_if_data *sdata,
 		printk("(2)tsf<=beacon.timestamp tsf:%llu timestamp:%llu dif:%llu\n",
 		tsf,timestamp,temp);
 	}
+	*/
 	//memcpy(bssidarr, bssid, ETH_ALEN);
 	//int i=0;
 	//for(i=0;i<ETH_ALEN;++i)

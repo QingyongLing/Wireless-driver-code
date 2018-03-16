@@ -3494,7 +3494,7 @@ static void __ieee80211_beacon_add_tim(struct ieee80211_sub_if_data *sdata,
 	 skb_put(skb, 4);
 	 static u8 index=0;
 	 ++index;
-	 printk("beacon index is %u------------\n",index)
+	 //printk("beacon index is %u------------\n",index)
 	 *pos++ = WLAN_EID_SLOT_MAP;
 	 *pos++ = 2;
 	 *pos++ = index;
