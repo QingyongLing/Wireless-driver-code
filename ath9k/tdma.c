@@ -39,7 +39,7 @@ void tdma_tasklet(unsigned long data)
         u64 temptsf=tsf-next_swba;
         u64 slot= do_div(temptsf,200000);
         do_div(slot,4000);
-        if(slot<3){
+        if(slot==0){
             printk("Slot = %llu, beacon_tasklet is acivate at %llu\n",slot,tsf);
         }     
     }
