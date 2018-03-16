@@ -1382,7 +1382,7 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 		    ieee80211_drv_tx(local, vif, sta, skb);
 		}
 		if(count==200){
-			printk("send 100 packet\n");
+			//printk("send 100 packet\n");
             count=0;
 		}
 	}

@@ -3383,7 +3383,7 @@ void tdma_send_data(struct ieee80211_hw *hw){
 	++swba_count;
 	ieee80211_tx_pending((unsigned long)local);
 	if(swba_count==250){
-		printk("swba send data 250 times\n");
+		//printk("swba send data 250 times\n");
 		swba_count=0;
 	}
 }
