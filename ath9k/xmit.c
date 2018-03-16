@@ -1209,10 +1209,10 @@ static void ath_buf_set_rate(struct ath_softc *sc, struct ath_buf *bf,
         //修改 2018.3.16
 		rates[i].flags |= IEEE80211_TX_RC_MCS;
 		#if MINSTREL_MAX_STREAMS >= 3
-        ptintk("---------MINSTREL_MAX_STREAMS >= 3--------\n");
+        printk("---------MINSTREL_MAX_STREAMS >= 3--------\n");
 		#endif
 		if (rates[i].flags & IEEE80211_TX_RC_40_MHZ_WIDTH){
-			 ptintk("--------IEEE80211_TX_RC_40_MHZ_WIDTH--------\n");
+			 printk("--------IEEE80211_TX_RC_40_MHZ_WIDTH--------\n");
 		}
 		printk("---------Set MCS index = 6--------\n");
 		rix=6;
