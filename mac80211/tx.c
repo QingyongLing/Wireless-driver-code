@@ -1381,8 +1381,8 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
             __skb_unlink(skb, skbs);
 		    ieee80211_drv_tx(local, vif, sta, skb);
 		}
-		if(count==200){
-			//printk("send 100 packet\n");
+		if(count==2000){
+			printk("send 2000 packet\n");
             count=0;
 		}
 	}
@@ -1396,7 +1396,7 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
 			       bool txpending)
 {
 	//修改 2018.2.19
-    if(vif->type==NL80211_IFTYPE_AP)
+    //if(vif->type==NL80211_IFTYPE_AP)
 	    return ieee80211_tx_frags_byAP(local,vif,sta,skbs,txpending);
 
 	struct sk_buff *skb, *tmp;
@@ -3411,7 +3411,7 @@ void ieee80211_tx_pending(unsigned long data)
 			//修改 2018.2.20
 			static int send_count=0;
 			++send_count;
-			if(send_count==1){
+			if(send_count==3){
 				send_count=0;
 				break;
 			}

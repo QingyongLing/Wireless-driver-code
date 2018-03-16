@@ -2290,10 +2290,11 @@ void ath9k_hw_beaconinit(struct ath_hw *ah, u32 next_beacon, u32 beacon_period)
 {
 	int flags = 0;
     //修改  2018.2.19
+	//周期
 	//TDMA Period
-	u32 tdma_beacon=200000;
+	u32 tdma_beacon=100000;
 	//TDMA Slot
-	u32 tdma_slot=4000;
+	u32 tdma_slot=2000;
 	//next_swba=tdma_tbtt_next-6TU(6144ms)
 	u32 tdma_tbtt_next=106144;
 
@@ -2342,10 +2343,11 @@ void ath9k_hw_set_sta_beacon_timers(struct ath_hw *ah,
    
 	ENABLE_REGWRITE_BUFFER(ah);
 	//修改 2018.3.15
+	//周期
 	//设定STA模式下的Beacon SWBA定时器
     //add the same as ath9k_hw_beaconinit function
 	printk("----------STA set SWBA Timer----------\n");
-	u32 tdma_slot=4000;
+	u32 tdma_slot=2000;
 	u32 next_swba=100000;
 	ah->imask |= ATH9K_INT_SWBA;
 	REG_WRITE(ah, AR_NEXT_SWBA, next_swba);
