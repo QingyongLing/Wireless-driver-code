@@ -3382,8 +3382,8 @@ void tdma_send_data(struct ieee80211_hw *hw){
 	struct ieee80211_local *local = hw_to_local(hw);
 	++swba_count;
 	ieee80211_tx_pending((unsigned long)local);
-	if(swba_count==250){
-		//printk("swba send data 250 times\n");
+	if(swba_count==2500){
+		printk("swba acivate 2500 times\n");
 		swba_count=0;
 	}
 }
