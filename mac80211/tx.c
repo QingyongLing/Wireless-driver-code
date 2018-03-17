@@ -3419,11 +3419,17 @@ void ieee80211_tx_pending(unsigned long data)
 		 */
 		if (local->queue_stop_reasons[i] ||
 		    skb_queue_empty(&local->pending[i])){
-				static int queuefailed=0;
-				++queuefailed;
-				if(queuefailed==100){
-					printk("*******queuefailed is 100 now*******\n");
-					queuefailed=0;
+				static int queuestop=0;
+				static int queueempty=0;
+				if(local->queue_stop_reasons[i])++queuestop;
+				if(skb_queue_empty(&local->pending[i])++queueempty;
+				if(queuestop==100){
+					printk("*******queuestop is 100 now*******\n");
+					queuestop=0;
+				}
+				if(queueempty==100){
+					printk("*******queueempty is 100 now*******\n");
+					queueempty=0;
 				}
                 continue;
 			}
