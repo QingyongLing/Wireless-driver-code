@@ -1354,6 +1354,14 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 				     IEEE80211_TX_INTFL_OFFCHAN_TX_OK)) {
 				if (local->queue_stop_reasons[q] &
 				    ~BIT(IEEE80211_QUEUE_STOP_REASON_OFFCHANNEL)) {
+					
+					static int countdrop=0;
+					++countdrop;
+					if(countdrop==0){
+						printk("--------Countdrop is 100 now\n");
+						countdrop=0;
+					}
+
 					spin_unlock_irqrestore(
 						&local->queue_stop_reason_lock,
 						flags);
@@ -1365,6 +1373,25 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 		}
 
 		if(local->queue_stop_reasons[q]||(!txpending)){
+			
+			static int queuestopcount=0;
+            static int packetbuffcount=0;
+			if(vif->type==NL80211_IFTYPE_STATION){
+                if(local->queue_stop_reasons[q]){
+                    ++queuestopcount;
+				    if(queuestopcount==200){
+					    queuestopcount=0;
+					    printk("--------queuestopcount is 200\n");
+				    }
+			    }
+			    ++packetbuffcount;
+			    if(packetbuffcount==2000){
+                    packetbuffcount=0;
+                    printk("--------packetbuffcount is 2000\n");
+			    }
+			}
+			
+
 			if(txpending){
 				skb_queue_splice_init(skbs,&local->pending[q]);
 			}else{
@@ -1384,6 +1411,9 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 		if(count==2000){
 			printk("send 2000 packet\n");
             count=0;
+		}
+		if(vif->type==NL80211_IFTYPE_STATION&&count==200){
+			printk("STA send 200 packet\n");
 		}
 	}
 	return true;
