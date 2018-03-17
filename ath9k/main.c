@@ -654,7 +654,6 @@ void ath_reset_work(struct work_struct *work)
 //修改 2018.3.1
 void tdma_set_SWBA(struct ieee80211_hw *hw,int period){
 	//now period is useless
-
     struct ath_softc *sc = hw->priv;
     struct ath_hw *ah=sc->sc_ah;
 	int flags=0;
@@ -664,6 +663,7 @@ void tdma_set_SWBA(struct ieee80211_hw *hw,int period){
 	ath9k_hw_disable_interrupts(ah);
 	flags |=AR_SWBA_TIMER_EN;
 	ah->imask |= ATH9K_INT_SWBA;
+	ENABLE_REGWRITE_BUFFER(ah);
 	REG_WRITE(ah, AR_NEXT_SWBA, next_swba);
     REG_WRITE(ah, AR_SWBA_PERIOD, tdma_slot);
 	REGWRITE_BUFFER_FLUSH(ah);
@@ -770,7 +770,7 @@ static int ath9k_start(struct ieee80211_hw *hw)
 
 	ath9k_rng_start(sc);
 
-    //修改
+    //修改 2018.3.17
     tdma_set_SWBA(hw,0);
 	return 0;
 }
