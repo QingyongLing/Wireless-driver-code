@@ -3418,8 +3418,19 @@ void ieee80211_tx_pending(unsigned long data)
 		 * frames, or we have no pending frames, proceed to next queue.
 		 */
 		if (local->queue_stop_reasons[i] ||
-		    skb_queue_empty(&local->pending[i]))
-			continue;
+		    skb_queue_empty(&local->pending[i])){
+				static int queuefailed=0;
+				++queuefailed;
+				if(queuefailed==100){
+					printk("*******queuefailed is 100 now*******\n");
+					queuefailed=0;
+				}
+                continue;
+			}
+			
+		//if (local->queue_stop_reasons[i] ||
+		//    skb_queue_empty(&local->pending[i]))
+		//    continue;
 
 		while (!skb_queue_empty(&local->pending[i])) {
 			struct sk_buff *skb = __skb_dequeue(&local->pending[i]);
@@ -3436,8 +3447,18 @@ void ieee80211_tx_pending(unsigned long data)
 			txok = ieee80211_tx_pending_skb(local, skb);
 			spin_lock_irqsave(&local->queue_stop_reason_lock,
 					  flags);
-			if (!txok)
-				break;
+			//change
+			if (!txok){
+				static int txokfailed=0;
+				++txokfailed;
+				if(txokfailed==100){
+					printk("*******txokfailed is 100 now*******\n");
+					txokfailed=0;
+				}
+                break;
+			}
+			//if (!txok)
+			//	break;
 			//修改 2018.2.20
 			static int send_count=0;
 			++send_count;
