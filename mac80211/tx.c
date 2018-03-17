@@ -1385,9 +1385,9 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 				    }
 			    }
 			    ++packetbuffcount;
-			    if(packetbuffcount==2000){
+			    if(packetbuffcount==200){
                     packetbuffcount=0;
-                    printk("--------packetbuffcount is 2000\n");
+                    printk("--------packetbuffcount is 200\n");
 			    }
 			}
 			
@@ -1412,8 +1412,8 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 			printk("send 2000 packet\n");
             count=0;
 		}
-		if(vif->type==NL80211_IFTYPE_STATION&&count==200){
-			printk("STA send 200 packet\n");
+		if(vif->type==NL80211_IFTYPE_STATION&&count==20){
+			printk("STA send 20 packet\n");
 		}
 	}
 	return true;
@@ -3428,7 +3428,7 @@ void ieee80211_tx_pending(unsigned long data)
 					queuestop=0;
 				}
 				if(queueempty==100){
-					printk("*******queueempty is 100 now*******\n");
+					//printk("*******queueempty is 100 now*******\n");
 					queueempty=0;
 				}
                 continue;
