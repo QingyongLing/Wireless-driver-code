@@ -507,7 +507,7 @@ static void ath9k_beacon_config_sta(struct ath_hw *ah,
     struct ath9k_beacon_state bs;
 
 	if (ath9k_cmn_beacon_config_sta(ah, conf, &bs) == -EPERM){
-		printk("----------STA set SWBA Timer  failed----------\n");
+		printk("----------STA set SWBA Timer failed----------\n");
 		return;
 	}
 
