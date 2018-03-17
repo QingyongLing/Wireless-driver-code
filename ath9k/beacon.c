@@ -484,7 +484,24 @@ static void ath9k_beacon_config_ap(struct ath_softc *sc,
 static void ath9k_beacon_config_sta(struct ath_hw *ah,
 				    struct ath_beacon_config *conf)
 {
-	/*
+    //修改 2018.3.16
+	//周期
+	int flags=0;
+	u64 tsf=0;
+	printk("----------STA set SWBA Timer----------\n");
+	u32 tdma_slot=2000;
+	u32 next_swba=100000;
+	ath9k_hw_disable_interrupts(ah);
+	flags |=AR_SWBA_TIMER_EN;
+	ah->imask |= ATH9K_INT_SWBA;
+	REG_WRITE(ah, AR_NEXT_SWBA, next_swba);
+    REG_WRITE(ah, AR_SWBA_PERIOD, tdma_slot);
+	REGWRITE_BUFFER_FLUSH(ah);
+	REG_SET_BIT(ah, AR_TIMER_MODE, flags);
+	ath9k_hw_set_interrupts(ah);
+	ath9k_hw_enable_interrupts(ah);
+	printk("----------STA set SWBA Timer succeed----------\n");
+
 	struct ath9k_beacon_state bs;
 
 	if (ath9k_cmn_beacon_config_sta(ah, conf, &bs) == -EPERM)
@@ -496,36 +513,6 @@ static void ath9k_beacon_config_sta(struct ath_hw *ah,
 
 	ath9k_hw_set_interrupts(ah);
 	ath9k_hw_enable_interrupts(ah);
-	*/
-	//修改 2018.3.16
-	//周期
-	int flags=0;
-	u64 tsf=0;
-	printk("----------STA set SWBA Timer----------\n");
-	u32 tdma_slot=2000;
-	u32 next_swba=100000;
-    struct ath9k_beacon_state bs;
-
-	if (ath9k_cmn_beacon_config_sta(ah, conf, &bs) == -EPERM){
-		printk("----------STA set SWBA Timer failed----------\n");
-		return;
-	}
-
-	ath9k_hw_disable_interrupts(ah);
-
-	ath9k_hw_set_sta_beacon_timers(ah, &bs);
-	ah->imask |= ATH9K_INT_BMISS;
-	ah->imask |= ATH9K_INT_SWBA;
-
-	flags |=AR_SWBA_TIMER_EN;
-	
-	REG_WRITE(ah, AR_NEXT_SWBA, next_swba);
-    REG_WRITE(ah, AR_SWBA_PERIOD, tdma_slot);
-	REGWRITE_BUFFER_FLUSH(ah);
-	REG_SET_BIT(ah, AR_TIMER_MODE, flags);
-	ath9k_hw_set_interrupts(ah);
-	ath9k_hw_enable_interrupts(ah);
-	printk("----------STA set SWBA Timer  succeed----------\n");
 }
 
 static void ath9k_beacon_config_adhoc(struct ath_softc *sc,
