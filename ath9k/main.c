@@ -771,7 +771,7 @@ static int ath9k_start(struct ieee80211_hw *hw)
 	ath9k_rng_start(sc);
 
     //修改 2018.3.17
-    tdma_set_SWBA(hw,0);
+    //tdma_set_SWBA(hw,0);
 	return 0;
 }
 

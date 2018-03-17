@@ -486,13 +486,13 @@ static void ath9k_beacon_config_sta(struct ath_hw *ah,
 {
     //修改 2018.3.16
 	//周期
-	/*
 	int flags=0;
 	u64 tsf=0;
 	printk("----------STA set SWBA Timer----------\n");
 	u32 tdma_slot=2000;
 	u32 next_swba=100000;
 	ath9k_hw_disable_interrupts(ah);
+	ENABLE_REGWRITE_BUFFER(ah);
 	flags |=AR_SWBA_TIMER_EN;
 	ah->imask |= ATH9K_INT_SWBA;
 	REG_WRITE(ah, AR_NEXT_SWBA, next_swba);
@@ -502,7 +502,7 @@ static void ath9k_beacon_config_sta(struct ath_hw *ah,
 	ath9k_hw_set_interrupts(ah);
 	ath9k_hw_enable_interrupts(ah);
 	printk("----------STA set SWBA Timer succeed----------\n");
-    */
+    
 	struct ath9k_beacon_state bs;
 
 	if (ath9k_cmn_beacon_config_sta(ah, conf, &bs) == -EPERM)
