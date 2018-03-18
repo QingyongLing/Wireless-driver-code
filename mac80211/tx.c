@@ -1426,7 +1426,7 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
 			       bool txpending)
 {
 	//修改 2018.2.19
-    //if(vif->type==NL80211_IFTYPE_AP)
+    if(vif->type==NL80211_IFTYPE_AP)
 	    return ieee80211_tx_frags_byAP(local,vif,sta,skbs,txpending);
 
 	struct sk_buff *skb, *tmp;
@@ -1488,6 +1488,12 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
 
 		__skb_unlink(skb, skbs);
 		ieee80211_drv_tx(local, vif, sta, skb);
+		static int count=0;
+		++count;
+		if(count==200){
+			printk("--------STA send 200 data\n--------\n");
+			count=0;
+		}
 	}
 
 	return true;
@@ -3422,7 +3428,7 @@ void ieee80211_tx_pending(unsigned long data)
 				static int queuestop=0;
 				static int queueempty=0;
 				if(local->queue_stop_reasons[i])++queuestop;
-				if(skb_queue_empty(&local->pending[i])++queueempty;
+				if(skb_queue_empty(&local->pending[i]))++queueempty;
 				if(queuestop==100){
 					printk("*******queuestop is 100 now*******\n");
 					queuestop=0;
