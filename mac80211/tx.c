@@ -1414,6 +1414,7 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 		}
 		if(vif->type==NL80211_IFTYPE_STATION&&count==20){
 			printk("STA send 20 packet\n");
+			count=0;
 		}
 	}
 	return true;
@@ -1428,6 +1429,10 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
 	//修改 2018.2.19
     if(vif->type==NL80211_IFTYPE_AP)
 	    return ieee80211_tx_frags_byAP(local,vif,sta,skbs,txpending);
+
+	if(vif->bss_conf.assoc){
+        return ieee80211_tx_frags_byAP(local,vif,sta,skbs,txpending);
+	}
 
 	struct sk_buff *skb, *tmp;
 	unsigned long flags;
@@ -1491,7 +1496,7 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
 		static int count=0;
 		++count;
 		if(count==200){
-			printk("--------STA send 200 data\n--------\n");
+			printk("--------STA send 200 data--------\n");
 			count=0;
 		}
 	}
@@ -3474,8 +3479,9 @@ void ieee80211_tx_pending(unsigned long data)
 			//修改 2018.2.20
 			static int send_count=0;
 			++send_count;
-			if(send_count==3){
+			if(send_count==300){
 				send_count=0;
+				printk("--------send_count is 300 now --------\n");
 				break;
 			}
 		}
