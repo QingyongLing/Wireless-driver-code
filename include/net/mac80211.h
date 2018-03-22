@@ -5620,3 +5620,6 @@ struct sk_buff *ieee80211_tx_dequeue(struct ieee80211_hw *hw,
 
 //修改 2018.2.19
 void tdma_send_data(struct ieee80211_hw *hw);
+//修改 2018.3.22
+int set_tdma_slot(int isslot);
+int get_tdma_slot();

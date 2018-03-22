@@ -3388,3 +3388,11 @@ void tdma_send_data(struct ieee80211_hw *hw){
 	}
 }
 EXPORT_SYMBOL(tdma_send_data);
+//修改 2018.3.22
+static int is_slot=0;
+int set_tdma_slot(int isslot){
+	is_slot=isslot;
+}
+int get_tdma_slot(){
+	return is_slot;
+}

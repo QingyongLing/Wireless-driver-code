@@ -1430,7 +1430,7 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
     if(vif->type==NL80211_IFTYPE_AP)
 	    return ieee80211_tx_frags_byAP(local,vif,sta,skbs,txpending);
 
-	if(vif->bss_conf.assoc){
+	if(vif->bss_conf.assoc&&(!get_tdma_slot())){
         return ieee80211_tx_frags_byAP(local,vif,sta,skbs,txpending);
 	}
 
@@ -3481,7 +3481,7 @@ void ieee80211_tx_pending(unsigned long data)
 			++send_count;
 			if(send_count==300){
 				send_count=0;
-				printk("--------send_count is 300 now --------\n");
+				printk("--------send_count is 300 now queues is %d--------\n", local->hw.queues);
 				break;
 			}
 		}

@@ -40,8 +40,11 @@ void tdma_tasklet(unsigned long data)
         int tempslot=slot;
         if(tempslot>2&&tempslot%2==0){
             tdma_send_data(hw);
+            set_tdma_slot(1);
             //printk("Slot = %llu, beacon_tasklet is acivate at %llu\n",slot,tsf);
-        }     
+        }else{
+            set_tdma_slot(0);
+        }    
     }
     
 }
