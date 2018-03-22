@@ -691,7 +691,10 @@ ieee80211_tx_h_rate_ctrl(struct ieee80211_tx_data *tx)
 
 	/* set up RTS protection if desired */
 	if (len > tx->local->hw.wiphy->rts_threshold) {
-		txrc.rts = true;
+	//修改 2018.3.22
+        txrc.rts = false;
+		printk("--------disable rts mechanism--------\n");
+		//txrc.rts = true;
 	}
 
 	info->control.use_rts = txrc.rts;
