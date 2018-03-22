@@ -3393,6 +3393,8 @@ static int is_slot=0;
 int set_tdma_slot(int isslot){
 	is_slot=isslot;
 }
+EXPORT_SYMBOL(set_tdma_slot);
 int get_tdma_slot(){
 	return is_slot;
 }
+EXPORT_SYMBOL(get_tdma_slot);
