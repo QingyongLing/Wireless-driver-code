@@ -1436,7 +1436,7 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
 	//if(vif->bss_conf.assoc&&(!get_tdma_slot())){
     //    return ieee80211_tx_frags_byAP(local,vif,sta,skbs,txpending);
 	//}
-	int cansend=get_tdma_slot();
+	int cansend=0;
 
 	struct sk_buff *skb, *tmp;
 	unsigned long flags;
@@ -1444,6 +1444,7 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
 	skb_queue_walk_safe(skbs, skb, tmp) {
 		struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
 		int q = info->hw_queue;
+		cansend=get_tdma_slot();
 
 #ifdef CPTCFG_MAC80211_VERBOSE_DEBUG
 		if (WARN_ON_ONCE(q >= local->hw.queues)) {
@@ -1457,6 +1458,13 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
 		if (local->queue_stop_reasons[q] ||
 		    (!txpending && !skb_queue_empty(&local->pending[q]))||
 			cansend==0) {
+            static int notinslot=0;
+			if(cansend==0)++notinslot;
+			if(notinslot==100){
+				printk("--------notinslot is 100 now--------\n");
+				notinslot=0;
+			}
+
 			if (unlikely(info->flags &
 				     IEEE80211_TX_INTFL_OFFCHAN_TX_OK)) {
 				if (local->queue_stop_reasons[q] &
