@@ -876,7 +876,8 @@ minstrel_ht_set_rate(struct minstrel_priv *mp, struct minstrel_ht_sta *mi,
 	    (mi->sta->smps_mode == IEEE80211_SMPS_DYNAMIC &&
 	     group->streams > 1)) {
 		ratetbl->rate[offset].count = ratetbl->rate[offset].count_rts;
-		flags |= IEEE80211_TX_RC_USE_RTS_CTS;
+		//修改 2018.3.22 disable RTSCTS
+		//flags |= IEEE80211_TX_RC_USE_RTS_CTS;
 	}
 
 	ratetbl->rate[offset].idx = idx;
