@@ -32,15 +32,19 @@ void tdma_tasklet(unsigned long data)
         if(slot>3){
             send_beacon=0;
             int tempslot=slot;
-            if(tempslot%2==0)return;
+            if(tempslot%4<2){
+                set_tdma_slot(0);
+                return;
+            }
             //printk("Slot = %llu, send data is acivate at %llu\n",slot,tsf);
+            set_tdma_slot(1);
             tdma_send_data(hw);
         }
     }else if(ah->opmode==NL80211_IFTYPE_STATION){
         int tempslot=slot;
-        if(tempslot>2&&tempslot%2==0){
-            tdma_send_data(hw);
+        if(tempslot>3&&tempslot%4<2){
             set_tdma_slot(1);
+            tdma_send_data(hw);
             //printk("Slot = %llu, beacon_tasklet is acivate at %llu\n",slot,tsf);
         }else{
             set_tdma_slot(0);

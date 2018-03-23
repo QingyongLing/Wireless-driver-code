@@ -691,7 +691,7 @@ ieee80211_tx_h_rate_ctrl(struct ieee80211_tx_data *tx)
 
 	/* set up RTS protection if desired */
 	if (len > tx->local->hw.wiphy->rts_threshold) {
-	//修改 2018.3.22
+	//修改 2018.3.22 useless
         txrc.rts = false;
 		printk("--------disable rts mechanism--------\n");
 		//txrc.rts = true;
@@ -1337,10 +1337,12 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 			       bool txpending){
     struct sk_buff *skb, *tmp;
 	unsigned long flags;
+    int is_in_slot=0;
 
 	skb_queue_walk_safe(skbs, skb, tmp) {
 		struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
 		int q = info->hw_queue;
+		is_in_slot=get_tdma_slot();
 
 #ifdef CPTCFG_MAC80211_VERBOSE_DEBUG
 		if (WARN_ON_ONCE(q >= local->hw.queues)) {
@@ -1357,13 +1359,6 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 				     IEEE80211_TX_INTFL_OFFCHAN_TX_OK)) {
 				if (local->queue_stop_reasons[q] &
 				    ~BIT(IEEE80211_QUEUE_STOP_REASON_OFFCHANNEL)) {
-					
-					static int countdrop=0;
-					++countdrop;
-					if(countdrop==0){
-						printk("--------Countdrop is 100 now\n");
-						countdrop=0;
-					}
 
 					spin_unlock_irqrestore(
 						&local->queue_stop_reason_lock,
@@ -1375,25 +1370,7 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 			} 
 		}
 
-		if(local->queue_stop_reasons[q]||(!txpending)){
-			
-			static int queuestopcount=0;
-            static int packetbuffcount=0;
-			if(vif->type==NL80211_IFTYPE_STATION){
-                if(local->queue_stop_reasons[q]){
-                    ++queuestopcount;
-				    if(queuestopcount==200){
-					    queuestopcount=0;
-					    printk("--------queuestopcount is 200\n");
-				    }
-			    }
-			    ++packetbuffcount;
-			    if(packetbuffcount==200){
-                    packetbuffcount=0;
-                    printk("--------packetbuffcount is 200\n");
-			    }
-			}
-			
+		if(local->queue_stop_reasons[q]||(!txpending)||(is_in_slot==0)){
 
 			if(txpending){
 				skb_queue_splice_init(skbs,&local->pending[q]);
@@ -1415,9 +1392,85 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 			printk("send 2000 packet\n");
             count=0;
 		}
-		if(vif->type==NL80211_IFTYPE_STATION&&count==20){
-			printk("STA send 20 packet\n");
-			count=0;
+	}
+	return true;
+}
+
+static bool ieee80211_tx_frags_bySTA(struct ieee80211_local *local,
+			       struct ieee80211_vif *vif,
+			       struct ieee80211_sta *sta,
+			       struct sk_buff_head *skbs,
+			       bool txpending){
+    struct sk_buff *skb, *tmp;
+	unsigned long flags;
+	int is_in_slot=0;
+
+	skb_queue_walk_safe(skbs, skb, tmp) {
+		struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+		int q = info->hw_queue;
+		is_in_slot=get_tdma_slot();
+
+#ifdef CPTCFG_MAC80211_VERBOSE_DEBUG
+		if (WARN_ON_ONCE(q >= local->hw.queues)) {
+			__skb_unlink(skb, skbs);
+			ieee80211_free_txskb(&local->hw, skb);
+			continue;
+		}
+#endif
+
+		spin_lock_irqsave(&local->queue_stop_reason_lock, flags);
+		if (local->queue_stop_reasons[q] ||
+		    (!txpending && !skb_queue_empty(&local->pending[q]))) {
+			if (unlikely(info->flags &
+				     IEEE80211_TX_INTFL_OFFCHAN_TX_OK)) {
+				if (local->queue_stop_reasons[q] &
+				    ~BIT(IEEE80211_QUEUE_STOP_REASON_OFFCHANNEL)) {
+
+					spin_unlock_irqrestore(
+						&local->queue_stop_reason_lock,
+						flags);
+					ieee80211_purge_tx_queue(&local->hw,
+								 skbs);
+					return true;
+				}
+			} 
+		}
+
+		if(local->queue_stop_reasons[q]||(!txpending)||(is_in_slot==0)){
+            if(q==2){
+				printk("--------bufferd q=2 --------\n");
+			}
+			if(q==3){
+				printk("--------bufferd q=3 --------\n");
+			}
+			static int notinslot=0;
+			if(is_in_slot==0){
+				++notinslot;
+			}
+			if(notinslot==200){
+                printk("--------STA not in slot is 200 now --------\n");
+				notinslot=0;
+			}
+
+			if(txpending){
+				skb_queue_splice_init(skbs,&local->pending[q]);
+			}else{
+				skb_queue_splice_tail_init(skbs,&local->pending[q]);
+			}
+            spin_unlock_irqrestore(&local->queue_stop_reason_lock,flags);
+			return false;
+		}
+		static int count=0;
+		if(txpending){
+            spin_unlock_irqrestore(&local->queue_stop_reason_lock, flags);
+		    info->control.vif = vif;
+			++count;
+            __skb_unlink(skb, skbs);
+		    ieee80211_drv_tx(local, vif, sta, skb);
+		}
+		if(count==200){
+			printk("--------STAsend 200 packet\n--------");
+            count=0;
 		}
 	}
 	return true;
@@ -1433,10 +1486,9 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
     if(vif->type==NL80211_IFTYPE_AP)
 	    return ieee80211_tx_frags_byAP(local,vif,sta,skbs,txpending);
 
-	//if(vif->bss_conf.assoc&&(!get_tdma_slot())){
-    //    return ieee80211_tx_frags_byAP(local,vif,sta,skbs,txpending);
-	//}
-	int cansend=0;
+	if(vif->type==NL80211_IFTYPE_STATION&&vif->bss_conf.assoc){
+        return ieee80211_tx_frags_bySTA(local,vif,sta,skbs,txpending);
+	}
 
 	struct sk_buff *skb, *tmp;
 	unsigned long flags;
@@ -1444,7 +1496,6 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
 	skb_queue_walk_safe(skbs, skb, tmp) {
 		struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
 		int q = info->hw_queue;
-		cansend=get_tdma_slot();
 
 #ifdef CPTCFG_MAC80211_VERBOSE_DEBUG
 		if (WARN_ON_ONCE(q >= local->hw.queues)) {
@@ -1456,15 +1507,7 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
 
 		spin_lock_irqsave(&local->queue_stop_reason_lock, flags);
 		if (local->queue_stop_reasons[q] ||
-		    (!txpending && !skb_queue_empty(&local->pending[q]))||
-			cansend==0) {
-            static int notinslot=0;
-			if(cansend==0)++notinslot;
-			if(notinslot==100){
-				printk("--------notinslot is 100 now--------\n");
-				notinslot=0;
-			}
-
+		    (!txpending && !skb_queue_empty(&local->pending[q]))) {
 			if (unlikely(info->flags &
 				     IEEE80211_TX_INTFL_OFFCHAN_TX_OK)) {
 				if (local->queue_stop_reasons[q] &
