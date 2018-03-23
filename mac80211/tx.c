@@ -1437,11 +1437,11 @@ static bool ieee80211_tx_frags_bySTA(struct ieee80211_local *local,
 		}
 
 		if(local->queue_stop_reasons[q]||(!txpending)||(is_in_slot==0)){
-            if(q==2){
-				printk("--------bufferd q=2 --------\n");
+            if(q==0){
+				printk("--------bufferd q=0 --------\n");
 			}
-			if(q==3){
-				printk("--------bufferd q=3 --------\n");
+			if(q==1){
+				printk("--------bufferd q=1 --------\n");
 			}
 			static int notinslot=0;
 			if(is_in_slot==0){
