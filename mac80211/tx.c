@@ -1433,9 +1433,10 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
     if(vif->type==NL80211_IFTYPE_AP)
 	    return ieee80211_tx_frags_byAP(local,vif,sta,skbs,txpending);
 
-	if(vif->bss_conf.assoc&&(!get_tdma_slot())){
-        return ieee80211_tx_frags_byAP(local,vif,sta,skbs,txpending);
-	}
+	//if(vif->bss_conf.assoc&&(!get_tdma_slot())){
+    //    return ieee80211_tx_frags_byAP(local,vif,sta,skbs,txpending);
+	//}
+	int cansend=get_tdma_slot();
 
 	struct sk_buff *skb, *tmp;
 	unsigned long flags;
@@ -1454,7 +1455,8 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
 
 		spin_lock_irqsave(&local->queue_stop_reason_lock, flags);
 		if (local->queue_stop_reasons[q] ||
-		    (!txpending && !skb_queue_empty(&local->pending[q]))) {
+		    (!txpending && !skb_queue_empty(&local->pending[q]))||
+			cansend==0) {
 			if (unlikely(info->flags &
 				     IEEE80211_TX_INTFL_OFFCHAN_TX_OK)) {
 				if (local->queue_stop_reasons[q] &
