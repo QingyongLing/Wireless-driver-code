@@ -1436,7 +1436,7 @@ static bool ieee80211_tx_frags_bySTA(struct ieee80211_local *local,
 			} 
 		}
 
-		if(local->queue_stop_reasons[q]||(!txpending)){
+		if((q!=0)&&(local->queue_stop_reasons[q]||(!txpending))){
             if(q==0){
 				printk("--------bufferd q=0 --------\n");
 			}
@@ -1461,13 +1461,13 @@ static bool ieee80211_tx_frags_bySTA(struct ieee80211_local *local,
 			return false;
 		}
 		static int count=0;
-		if(txpending){
+		//if(txpending){
             spin_unlock_irqrestore(&local->queue_stop_reason_lock, flags);
 		    info->control.vif = vif;
 			++count;
             __skb_unlink(skb, skbs);
 		    ieee80211_drv_tx(local, vif, sta, skb);
-		}
+		//}
 		if(count==200){
 			printk("--------STAsend 200 packet--------\n");
             count=0;
@@ -1486,9 +1486,7 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
     if(vif->type==NL80211_IFTYPE_AP)
 	    return ieee80211_tx_frags_byAP(local,vif,sta,skbs,txpending);
 
-    struct ieee80211_tx_info *tempinfo = IEEE80211_SKB_CB(skb);
-	bool manageframe=tempinfo->hw_queue==0?true:false;
-	if(vif->type==NL80211_IFTYPE_STATION&&vif->bss_conf.assoc&&(!manageframe)){
+	if(vif->type==NL80211_IFTYPE_STATION){
         return ieee80211_tx_frags_bySTA(local,vif,sta,skbs,txpending);
 	}
 
@@ -3489,7 +3487,7 @@ void ieee80211_tx_pending(unsigned long data)
 		if (local->queue_stop_reasons[i] ||
 		    skb_queue_empty(&local->pending[i])){
 				if(local->queue_stop_reasons[i]){
-					printk("-------queue stop reason is %d--------\n",
+					printk("-------queue stop reason is %lu--------\n",
 					        local->queue_stop_reasons[i]);
 				}
 				static int queuestop=0;
@@ -3516,17 +3514,19 @@ void ieee80211_tx_pending(unsigned long data)
 				continue;
 			}
 
+            //
+			is_in_slot=get_tdma_slot();
+			if(is_in_slot==0)break;
 			spin_unlock_irqrestore(&local->queue_stop_reason_lock,
 						flags);
 
-            //
-			is_in_slot=get_tdma_slot()
+           
 			txok = ieee80211_tx_pending_skb(local, skb);
 			spin_lock_irqsave(&local->queue_stop_reason_lock,
 					  flags);
 			//change
 			if((!txok)&&is_in_slot){
-				printk("-----txok failed is not beacuse of not in slot %d-------\n",is_in_slot);
+				printk("-----txok failed is not beacuse of not in slot %d------\n",is_in_slot);
 			}
 			if (!txok){
 				static int txokfailed=0;
