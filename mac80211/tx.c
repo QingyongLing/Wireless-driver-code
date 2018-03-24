@@ -1486,7 +1486,9 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
     if(vif->type==NL80211_IFTYPE_AP)
 	    return ieee80211_tx_frags_byAP(local,vif,sta,skbs,txpending);
 
-	if(vif->type==NL80211_IFTYPE_STATION&&vif->bss_conf.assoc){
+    struct ieee80211_tx_info *tempinfo = IEEE80211_SKB_CB(skb);
+	bool manageframe=tempinfo->hw_queue==0?true:false;
+	if(vif->type==NL80211_IFTYPE_STATION&&vif->bss_conf.assoc&&(!manageframe)){
         return ieee80211_tx_frags_bySTA(local,vif,sta,skbs,txpending);
 	}
 
