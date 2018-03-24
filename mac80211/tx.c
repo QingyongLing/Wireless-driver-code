@@ -3547,6 +3547,7 @@ void ieee80211_tx_pending(unsigned long data)
 				printk("--------send_count is 300 now queues is %d--------\n", local->hw.queues);
 				break;
 			}
+			if(send_count%5==0)break;
 		}
 
 		if (skb_queue_empty(&local->pending[i]))
