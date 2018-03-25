@@ -3495,11 +3495,6 @@ void ieee80211_tx_pending(unsigned long data)
 				if(i==2&&skb_queue_empty(&local->pending[i]))
 				    ++queueempty;
 				if(queueempty==100){
-					struct ieee80211_ops *tempops=local->ops;
-					u64 tsf1= tempops->get_tsf(&(local->hw),NULL);
-					u64 tsf2= tempops->get_tsf(&(local->hw),NULL);
-					printk("------tsf1:%llu  tsf2:%llu  tsf2-tsf1:%llu--------\n",
-					    tsf1,tsf2,tsf2-tsf1);
 					printk("*******queueempty is 100 now*******\n");
 					queueempty=0;
 				}
@@ -3521,11 +3516,10 @@ void ieee80211_tx_pending(unsigned long data)
 
             //
 			is_in_slot=get_tdma_slot();
-			if(is_in_slot==0)break;
+			//if(is_in_slot==0)break;
 			spin_unlock_irqrestore(&local->queue_stop_reason_lock,
 						flags);
-
-           
+      
 			txok = ieee80211_tx_pending_skb(local, skb);
 			spin_lock_irqsave(&local->queue_stop_reason_lock,
 					  flags);
@@ -3550,10 +3544,19 @@ void ieee80211_tx_pending(unsigned long data)
 			if(send_count==300){
 				send_count=0;
 				printk("--------send_count is 300 now queues is %d--------\n", local->hw.queues);
-				break;
+				//break;
 			}
-			//if(send_count%5==0)break;
-			break;
+			struct ieee80211_ops *ops=local->ops;
+			static int inAPslot=0;
+			u64 tsf= ops->get_tsf(&(local->hw),NULL);
+			if(tsf_is_AP_slot(tsf)){
+				++inAPslot;
+				if(inAPslot==100){
+					inAPslot=0;
+					printk("--------STA in AP slot is 100 now--------\n");
+				}
+				break;		
+			}	
 		}
 
 		if (skb_queue_empty(&local->pending[i]))

@@ -3398,3 +3398,22 @@ int get_tdma_slot(){
 	return is_slot;
 }
 EXPORT_SYMBOL(get_tdma_slot);
+#include <asm/div64.h>
+bool tsf_is_AP_slot(u64 tsf){
+    //u32 tdma_tbtt_next=106144;  next_swba=100000us
+    //周期
+    //Beacon period is 100000
+    //SWBA period is 2000
+	u64 next_swba=100000;
+	u64 beacon_period=100000;
+	u64 swba_period=2000;
+	u64 temptsf=tsf-next_swba;
+    u64 slot64= do_div(temptsf,100000);
+    do_div(slot64,2000);
+	int slot=slot64;
+	if(slot>3&&slot%2==0){
+		return false;
+	}
+	return true;
+}
+EXPORT_SYMBOL(tsf_is_AP_slot);

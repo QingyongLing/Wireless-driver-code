@@ -5616,10 +5616,14 @@ void ieee80211_unreserve_tid(struct ieee80211_sta *sta, u8 tid);
  */
 struct sk_buff *ieee80211_tx_dequeue(struct ieee80211_hw *hw,
 				     struct ieee80211_txq *txq);
-#endif /* MAC80211_H */
 
 //修改 2018.2.19
 void tdma_send_data(struct ieee80211_hw *hw);
 //修改 2018.3.22
 int set_tdma_slot(int isslot);
 int get_tdma_slot(void);
+//修改 2018.3.25
+bool tsf_is_AP_slot(u64 tsf);
+
+#endif /* MAC80211_H */
+
