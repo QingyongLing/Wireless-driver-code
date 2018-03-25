@@ -828,7 +828,9 @@ static void ath9k_set_hw_capab(struct ath_softc *sc, struct ieee80211_hw *hw)
 		ieee80211_hw_set(hw, SUPPORTS_PS);
 
 	if (sc->sc_ah->caps.hw_caps & ATH9K_HW_CAP_HT) {
-		ieee80211_hw_set(hw, AMPDU_AGGREGATION);
+		//修改 2018.3.25 disable Frame Aggregation
+		printk("--------Disable IEEE 802.11N Frame Aggregation--------\n");
+		//ieee80211_hw_set(hw, AMPDU_AGGREGATION);
 
 		if (AR_SREV_9280_20_OR_LATER(ah))
 			hw->radiotap_mcs_details |=

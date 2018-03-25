@@ -3483,8 +3483,8 @@ void ieee80211_tx_pending(unsigned long data)
 				static int queueempty=0;
 				if(i==2&&skb_queue_empty(&local->pending[i]))
 				    ++queueempty;
-				if(queueempty==100){
-					printk("*******queueempty is 100 now*******\n");
+				if(queueempty==1000){
+					printk("*******queueempty is 1000 now*******\n");
 					queueempty=0;
 				}
                 continue;
@@ -3537,10 +3537,6 @@ void ieee80211_tx_pending(unsigned long data)
 			u64 tsf= ops->get_tsf(&(local->hw),NULL);
 			bool flag=tsf_is_AP_slot(tsf);
 			if(flag){
-				printk("----this is AP slot--------\n");
-			}
-			break;
-			if(tsf_is_AP_slot(tsf)){
 				++inAPslot;
 				if(inAPslot==100){
 					inAPslot=0;
