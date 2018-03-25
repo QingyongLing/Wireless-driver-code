@@ -1403,12 +1403,10 @@ static bool ieee80211_tx_frags_bySTA(struct ieee80211_local *local,
 			       bool txpending){
     struct sk_buff *skb, *tmp;
 	unsigned long flags;
-	int is_in_slot=0;
 
 	skb_queue_walk_safe(skbs, skb, tmp) {
 		struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
 		int q = info->hw_queue;
-		is_in_slot=get_tdma_slot();
 
 #ifdef CPTCFG_MAC80211_VERBOSE_DEBUG
 		if (WARN_ON_ONCE(q >= local->hw.queues)) {
@@ -1442,14 +1440,6 @@ static bool ieee80211_tx_frags_bySTA(struct ieee80211_local *local,
 			}
 			if(q==1){
 				printk("--------bufferd q=1 --------\n");
-			}
-			static int notinslot=0;
-			if(is_in_slot==0){
-				++notinslot;
-			}
-			if(notinslot==200){
-                printk("--------STA not in slot is 200 now --------\n");
-				notinslot=0;
 			}
 
 			if(txpending){
@@ -3475,7 +3465,6 @@ void ieee80211_tx_pending(unsigned long data)
 	unsigned long flags;
 	int i;
 	bool txok;
-    int is_in_slot=0;
 	rcu_read_lock();
 
 	spin_lock_irqsave(&local->queue_stop_reason_lock, flags);
@@ -3515,18 +3504,14 @@ void ieee80211_tx_pending(unsigned long data)
 			}
 
             //
-			is_in_slot=get_tdma_slot();
-			//if(is_in_slot==0)break;
+			//is_in_slot=get_tdma_slot();
 			spin_unlock_irqrestore(&local->queue_stop_reason_lock,
 						flags);
       
 			txok = ieee80211_tx_pending_skb(local, skb);
 			spin_lock_irqsave(&local->queue_stop_reason_lock,
 					  flags);
-			//change
-			if((!txok)&&is_in_slot){
-				printk("-----txok failed is not beacuse of not in slot %d------\n",is_in_slot);
-			}
+		
 			if (!txok){
 				static int txokfailed=0;
 				++txokfailed;
@@ -3546,9 +3531,11 @@ void ieee80211_tx_pending(unsigned long data)
 				printk("--------send_count is 300 now queues is %d--------\n", local->hw.queues);
 				//break;
 			}
+			break;
 			struct ieee80211_ops *ops=local->ops;
 			static int inAPslot=0;
 			u64 tsf= ops->get_tsf(&(local->hw),NULL);
+			bool flag=tsf_is_AP_slot(tsf);
 			if(tsf_is_AP_slot(tsf)){
 				++inAPslot;
 				if(inAPslot==100){
