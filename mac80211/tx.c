@@ -3531,11 +3531,15 @@ void ieee80211_tx_pending(unsigned long data)
 				printk("--------send_count is 300 now queues is %d--------\n", local->hw.queues);
 				//break;
 			}
-			break;
+			
 			struct ieee80211_ops *ops=local->ops;
 			static int inAPslot=0;
 			u64 tsf= ops->get_tsf(&(local->hw),NULL);
 			bool flag=tsf_is_AP_slot(tsf);
+			if(flag){
+				printk("----this is AP slot--------\n");
+			}
+			break;
 			if(tsf_is_AP_slot(tsf)){
 				++inAPslot;
 				if(inAPslot==100){
