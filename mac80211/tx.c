@@ -3487,14 +3487,19 @@ void ieee80211_tx_pending(unsigned long data)
 		if (local->queue_stop_reasons[i] ||
 		    skb_queue_empty(&local->pending[i])){
 				if(local->queue_stop_reasons[i]){
-					printk("-------queue stop reason is %lu--------\n",
-					        local->queue_stop_reasons[i]);
+					printk("-------queue %d stop reason is %lu--------\n",
+					        i,local->queue_stop_reasons[i]);
 				}
 				static int queuestop=0;
 				static int queueempty=0;
 				if(i==2&&skb_queue_empty(&local->pending[i]))
 				    ++queueempty;
 				if(queueempty==100){
+					struct ieee80211_ops *tempops=local->ops;
+					u64 tsf1= tempops->get_tsf(&(local->hw),NULL);
+					u64 tsf2= tempops->get_tsf(&(local->hw),NULL);
+					printk("------tsf1:%llu  tsf2:%llu  tsf2-tsf1:%llu--------\n",
+					    tsf1,tsf2,tsf2-tsf1);
 					printk("*******queueempty is 100 now*******\n");
 					queueempty=0;
 				}
@@ -3547,7 +3552,8 @@ void ieee80211_tx_pending(unsigned long data)
 				printk("--------send_count is 300 now queues is %d--------\n", local->hw.queues);
 				break;
 			}
-			if(send_count%5==0)break;
+			//if(send_count%5==0)break;
+			break;
 		}
 
 		if (skb_queue_empty(&local->pending[i]))
