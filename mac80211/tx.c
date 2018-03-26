@@ -1337,12 +1337,17 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 			       bool txpending){
     struct sk_buff *skb, *tmp;
 	unsigned long flags;
-    int is_in_slot=0;
+	 //修改 2018.3.26
+	struct ieee80211_ops *ops=local->ops;
 
 	skb_queue_walk_safe(skbs, skb, tmp) {
 		struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
 		int q = info->hw_queue;
-		is_in_slot=get_tdma_slot();
+		//tsf to tdma slot
+		u64 tsf= ops->get_tsf(&(local->hw),NULL);
+		int slot=tsf_to_slot(tsf);
+		bool data_slot=is_data_slot(slot,vif->type);
+		bool canbuffer=true;
 
 #ifdef CPTCFG_MAC80211_VERBOSE_DEBUG
 		if (WARN_ON_ONCE(q >= local->hw.queues)) {
@@ -1359,7 +1364,6 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 				     IEEE80211_TX_INTFL_OFFCHAN_TX_OK)) {
 				if (local->queue_stop_reasons[q] &
 				    ~BIT(IEEE80211_QUEUE_STOP_REASON_OFFCHANNEL)) {
-
 					spin_unlock_irqrestore(
 						&local->queue_stop_reason_lock,
 						flags);
@@ -1370,8 +1374,8 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 			} 
 		}
 
-		if(local->queue_stop_reasons[q]||(!txpending)||(is_in_slot==0)){
-
+        if(q==0)canbuffer=false;
+		if(canbuffer&&(local->queue_stop_reasons[q]||(!txpending))){
 			if(txpending){
 				skb_queue_splice_init(skbs,&local->pending[q]);
 			}else{
@@ -1380,14 +1384,27 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
             spin_unlock_irqrestore(&local->queue_stop_reason_lock,flags);
 			return false;
 		}
+
+        if(canbuffer&&(!data_slot)){
+			skb_queue_splice_init(skbs,&local->pending[q]);
+			spin_unlock_irqrestore(&local->queue_stop_reason_lock,flags);
+			static int notdataslot=0;
+			++notdataslot;
+			if(notdataslot==100){
+				printk("-------not data slot 100 times now--------\n");
+				notdataslot=0;
+			}
+			return false;
+		}
+
 		static int count=0;
-		if(txpending){
+		//if(txpending){
             spin_unlock_irqrestore(&local->queue_stop_reason_lock, flags);
 		    info->control.vif = vif;
 			++count;
             __skb_unlink(skb, skbs);
 		    ieee80211_drv_tx(local, vif, sta, skb);
-		}
+		//}
 		if(count==2000){
 			printk("send 2000 packet\n");
             count=0;
@@ -1459,6 +1476,7 @@ static bool ieee80211_tx_frags_bySTA(struct ieee80211_local *local,
 			skb_queue_splice_init(skbs,&local->pending[q]);
 			spin_unlock_irqrestore(&local->queue_stop_reason_lock,flags);
 			static int notdataslot=0;
+			printk("-------not data slot 1 times now--------\n");
 			++notdataslot;
 			if(notdataslot==100){
 				printk("-------not data slot 100 times now--------\n");
@@ -1471,10 +1489,10 @@ static bool ieee80211_tx_frags_bySTA(struct ieee80211_local *local,
 		//if(txpending){
             spin_unlock_irqrestore(&local->queue_stop_reason_lock, flags);
 		    info->control.vif = vif;
-			++count;
             __skb_unlink(skb, skbs);
 		    ieee80211_drv_tx(local, vif, sta, skb);
 		//}
+		++count;
 		if(count==200){
 			printk("--------STAsend 200 packet--------\n");
             count=0;
@@ -3495,6 +3513,10 @@ void ieee80211_tx_pending(unsigned long data)
 				if(i==2&&skb_queue_empty(&local->pending[i]))
 				    ++queueempty;
 				if(queueempty==1000){
+					u32 val=REG_READ(ah, AR_DIAG_SW);
+                    if(val&AR_DIAG_FORCE_CH_IDLE_HIGH){
+                        printk("--------AR_DIAG_FORCE_CH_IDLE_HIGH---------\n");
+                    }
 					printk("*******queueempty is 1000 now*******\n");
 					queueempty=0;
 				}

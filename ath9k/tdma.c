@@ -12,23 +12,32 @@ void tdma_tasklet(unsigned long data)
     struct ath_softc *sc = (struct ath_softc *)data;
     struct ieee80211_hw *hw=sc->hw;
     struct ath_hw *ah=sc->sc_ah;
-    //struct ieee80211_local *local = hw_to_local(hw);
-    //u32 tdma_tbtt_next=106144;  next_swba=100000us
-    //周期
-    //Beacon period is 100000
-    //SWBA period is 2000
-    u64 next_swba=100000;
     u64 tsf = ath9k_hw_gettsf64(ah);
-    u64 temptsf=tsf-next_swba;
-    u64 slot= do_div(temptsf,100000);
-    do_div(slot,2000);
+    int slot=tsf_to_slot(tsf);
     if(ah->opmode==NL80211_IFTYPE_AP){
-        static int send_beacon=0;
-        if(slot<4&&send_beacon==0){
-            send_beacon=1;
+        static bool send_beacon=false;
+        bool beacon_slot=is_AP_beacon_slot(slot);
+        bool data_slot=is_data_slot(slot,NL80211_IFTYPE_AP);
+        if(beacon_slot&&send_beacon==false){
+            send_beacon=true;
             ath9k_beacon_tasklet(data);
+            return;
             //printk("Slot = %llu, beacon_tasklet is acivate at %llu\n",slot,tsf);
         }
+        if(data_slot){
+            tdma_send_data(hw);
+        }
+    }else if(ah->opmode==NL80211_IFTYPE_STATION){
+        bool data_slot=is_data_slot(slot,NL80211_IFTYPE_STATION);
+        if(data_slot){
+            tdma_send_data(hw);
+        } 
+    }
+    
+}
+
+/*
+
         if(slot>3){
             send_beacon=0;
             int tempslot=slot;
@@ -40,25 +49,12 @@ void tdma_tasklet(unsigned long data)
             set_tdma_slot(1);
             tdma_send_data(hw);
         }
-    }else if(ah->opmode==NL80211_IFTYPE_STATION){
-        int tempslot=slot;
-        if(tempslot>3&&tempslot%2==0){
+
+         if(tempslot>3&&tempslot%2==0){
             set_tdma_slot(1);
-            
-            static int temp=0;
-            ++temp;
-            if(temp==100){
-                u32 val=REG_READ(ah, AR_DIAG_SW);
-                if(val&AR_DIAG_FORCE_CH_IDLE_HIGH){
-                    printk("--------AR_DIAG_FORCE_CH_IDLE_HIGH---------\n");
-                }
-                temp=0;
-            }
             tdma_send_data(hw);
             //printk("Slot = %llu, beacon_tasklet is acivate at %llu\n",slot,tsf);
         }else{
             set_tdma_slot(0);
-        }    
-    }
-    
-}
+        }   
+*/
