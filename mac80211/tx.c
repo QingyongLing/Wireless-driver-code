@@ -1343,11 +1343,7 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 	skb_queue_walk_safe(skbs, skb, tmp) {
 		struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
 		int q = info->hw_queue;
-		//tsf to tdma slot
-		u64 tsf= ops->get_tsf(&(local->hw),NULL);
-		int slot=tsf_to_slot(tsf);
-		bool data_slot=is_data_slot(slot,vif->type);
-		bool canbuffer=true;
+		
 
 #ifdef CPTCFG_MAC80211_VERBOSE_DEBUG
 		if (WARN_ON_ONCE(q >= local->hw.queues)) {
@@ -1374,6 +1370,11 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 			} 
 		}
 
+        //tsf to tdma slot
+		u64 tsf= ops->get_tsf(&(local->hw),NULL);
+		int slot=tsf_to_slot(tsf);
+		bool data_slot=is_data_slot(slot,vif->type);
+		bool canbuffer=true;
         if(q==0)canbuffer=false;
 		if(canbuffer&&(local->queue_stop_reasons[q]||(!txpending))){
 			if(txpending){
@@ -1477,8 +1478,8 @@ static bool ieee80211_tx_frags_bySTA(struct ieee80211_local *local,
 			spin_unlock_irqrestore(&local->queue_stop_reason_lock,flags);
 			static int notdataslot=0;
 			++notdataslot;
-			if(notdataslot==10){
-				printk("-------not data slot 10 times now--------\n");
+			if(notdataslot==100){
+				printk("-------not data slot 100 times now--------\n");
 				notdataslot=0;
 			}
 			return false;
