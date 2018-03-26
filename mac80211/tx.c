@@ -1471,7 +1471,7 @@ static bool ieee80211_tx_frags_bySTA(struct ieee80211_local *local,
             spin_unlock_irqrestore(&local->queue_stop_reason_lock,flags);
 			return false;
 		}
-		if(data_slot)
+		if(dataslot)
 		    printk("-----tsf%llu this is data slot=%d-------\n",tsf,slot);
 	    else
 		    printk("-----tsf%llu this is not slot=%d-------\n",tsf,slot);
