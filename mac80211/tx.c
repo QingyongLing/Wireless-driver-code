@@ -1460,8 +1460,8 @@ static bool ieee80211_tx_frags_bySTA(struct ieee80211_local *local,
         //if(q==0)canbuffer=false;
 
 		if(canbuffer&&(local->queue_stop_reasons[q]||(!txpending))){
-			if(q==1){
-				printk("--------bufferd q=1 --------\n");
+			if(q==0){
+				printk("--------bufferd q=0 --------\n");
 			}
 			if(txpending){
 				skb_queue_splice_init(skbs,&local->pending[q]);
