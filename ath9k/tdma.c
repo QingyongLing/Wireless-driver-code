@@ -57,4 +57,8 @@ void tdma_tasklet(unsigned long data)
         }else{
             set_tdma_slot(0);
         }   
+        u32 val=REG_READ(ah, AR_DIAG_SW);
+                    if(val&AR_DIAG_FORCE_CH_IDLE_HIGH){
+                        printk("--------AR_DIAG_FORCE_CH_IDLE_HIGH---------\n");
+                    }
 */

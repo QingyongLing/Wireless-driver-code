@@ -1471,7 +1471,11 @@ static bool ieee80211_tx_frags_bySTA(struct ieee80211_local *local,
             spin_unlock_irqrestore(&local->queue_stop_reason_lock,flags);
 			return false;
 		}
-		
+		if(data_slot)
+		    printk("-----tsf%llu this is data slot=%d-------\n",tsf,slot);
+	    else
+		    printk("-----tsf%llu this is not slot=%d-------\n",tsf,slot);
+		if(data_slot)
 		if(canbuffer&&(!dataslot)){
 			skb_queue_splice_init(skbs,&local->pending[q]);
 			spin_unlock_irqrestore(&local->queue_stop_reason_lock,flags);
@@ -3513,10 +3517,6 @@ void ieee80211_tx_pending(unsigned long data)
 				if(i==2&&skb_queue_empty(&local->pending[i]))
 				    ++queueempty;
 				if(queueempty==1000){
-					u32 val=REG_READ(ah, AR_DIAG_SW);
-                    if(val&AR_DIAG_FORCE_CH_IDLE_HIGH){
-                        printk("--------AR_DIAG_FORCE_CH_IDLE_HIGH---------\n");
-                    }
 					printk("*******queueempty is 1000 now*******\n");
 					queueempty=0;
 				}
