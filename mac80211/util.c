@@ -3399,8 +3399,8 @@ int get_tdma_slot(){
 }
 EXPORT_SYMBOL(get_tdma_slot);
 #include <asm/div64.h>
-bool tsf_is_AP_slot(u64 tsf){
-    //u32 tdma_tbtt_next=106144;  next_swba=100000us
+int tsf_to_slot(u64 tsf){
+	//u32 tdma_tbtt_next=106144;  next_swba=100000us
     //周期
     //Beacon period is 100000
     //SWBA period is 2000
@@ -3411,9 +3411,23 @@ bool tsf_is_AP_slot(u64 tsf){
     u64 slot64= do_div(temptsf,100000);
     do_div(slot64,2000);
 	int slot=slot64;
-	if(slot>3&&slot%2==0){
-		return false;
-	}
-	return true;
+	return slot;
 }
-EXPORT_SYMBOL(tsf_is_AP_slot);
+EXPORT_SYMBOL(tsf_to_slot);
+bool is_AP_beacon_slot(int slot){
+    //0-3 slot is beacon frame slot
+	//assert this is AP mode when this function is called
+	return slot<3?true:false;
+}
+EXPORT_SYMBOL(is_AP_beacon_slot);
+bool is_data_slot(int slot, enum nl80211_iftype type){
+	if(is_AP_beacon_slot(slot))
+	    return false;
+    if(type==NL80211_IFTYPE_AP){
+        return slot%2==0?false:true;
+	}else if(type==NL80211_IFTYPE_STATION){
+        return slot%2==0?true:false;
+	}
+	return false;
+}
+EXPORT_SYMBOL(is_data_slot);

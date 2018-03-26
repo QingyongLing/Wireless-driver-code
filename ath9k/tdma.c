@@ -44,6 +44,16 @@ void tdma_tasklet(unsigned long data)
         int tempslot=slot;
         if(tempslot>3&&tempslot%2==0){
             set_tdma_slot(1);
+            
+            static int temp=0;
+            ++temp;
+            if(temp==100){
+                u32 val=REG_READ(ah, AR_DIAG_SW);
+                if(val&AR_DIAG_FORCE_CH_IDLE_HIGH){
+                    printk("--------AR_DIAG_FORCE_CH_IDLE_HIGH---------\n");
+                }
+                temp=0;
+            }
             tdma_send_data(hw);
             //printk("Slot = %llu, beacon_tasklet is acivate at %llu\n",slot,tsf);
         }else{

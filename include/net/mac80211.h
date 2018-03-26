@@ -5623,7 +5623,8 @@ void tdma_send_data(struct ieee80211_hw *hw);
 int set_tdma_slot(int isslot);
 int get_tdma_slot(void);
 //修改 2018.3.25
-bool tsf_is_AP_slot(u64 tsf);
-
+int tsf_to_slot(u64 tsf);
+bool is_AP_beacon_slot(int slot);
+bool is_data_slot(int slot, enum nl80211_iftype type);
 #endif /* MAC80211_H */
 
