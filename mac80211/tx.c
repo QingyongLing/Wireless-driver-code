@@ -1458,8 +1458,9 @@ static bool ieee80211_tx_frags_bySTA(struct ieee80211_local *local,
 		u64 tsf= ops->get_tsf(&(local->hw),NULL);
 		int slot=tsf_to_slot(tsf);
 		bool dataslot=is_data_slot(slot,vif->type);
+		dataslot=true;
 		bool canbuffer=true;
-        //if(q==0)canbuffer=false;
+        if(q==0)canbuffer=false;
 
 		if(canbuffer&&(local->queue_stop_reasons[q]||(!txpending))){
 			if(q==0){
@@ -3549,6 +3550,7 @@ void ieee80211_tx_pending(unsigned long data)
 				}
                 break;
 			}
+			if(i!=0)break;
 		}
 
 		if (skb_queue_empty(&local->pending[i]))
