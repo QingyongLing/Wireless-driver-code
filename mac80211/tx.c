@@ -1376,6 +1376,7 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 		bool data_slot=is_data_slot(slot,vif->type);
 		bool canbuffer=true;
         if(q==0)canbuffer=false;
+		
 		if(canbuffer&&(local->queue_stop_reasons[q]||(!txpending))){
 			if(txpending){
 				skb_queue_splice_init(skbs,&local->pending[q]);
@@ -1458,7 +1459,7 @@ static bool ieee80211_tx_frags_bySTA(struct ieee80211_local *local,
 		int slot=tsf_to_slot(tsf);
 		bool dataslot=is_data_slot(slot,vif->type);
 		bool canbuffer=true;
-        if(q==0)canbuffer=false;
+        //if(q==0)canbuffer=false;
 
 		if(canbuffer&&(local->queue_stop_reasons[q]||(!txpending))){
 			if(q==0){
