@@ -25,6 +25,7 @@ void tdma_tasklet(unsigned long data)
             //printk("Slot = %llu, beacon_tasklet is acivate at %llu\n",slot,tsf);
         }
         if(data_slot){
+            send_beacon=false;
             tdma_send_data(hw);
         }
     }else if(ah->opmode==NL80211_IFTYPE_STATION){
