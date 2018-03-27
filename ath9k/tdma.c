@@ -32,7 +32,7 @@ void tdma_tasklet(unsigned long data)
         bool data_slot=is_data_slot(slot,NL80211_IFTYPE_STATION);
         if(data_slot){
             tdma_send_data(hw);
-            if(slot==4||slot==6||slot==8)
+            if(slot==4||slot==14||slot==24)
             printk("------slot=%d  tsf=%llu --------\n",slot,tsf);
         } 
     }
