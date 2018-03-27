@@ -17,7 +17,7 @@ void tdma_tasklet(unsigned long data)
     if(ah->opmode==NL80211_IFTYPE_AP){
         static bool send_beacon=false;
         bool beacon_slot=is_AP_beacon_slot(slot);
-        bool data_slot=is_data_slot(slot,NL80211_IFTYPE_AP);
+        bool data_slot=is_data_slot(slot, NL80211_IFTYPE_AP);
         if(beacon_slot&&send_beacon==false){
             send_beacon=true;
             ath9k_beacon_tasklet(data);
@@ -29,11 +29,9 @@ void tdma_tasklet(unsigned long data)
             tdma_send_data(hw);
         }
     }else if(ah->opmode==NL80211_IFTYPE_STATION){
-        bool data_slot=is_data_slot(slot,NL80211_IFTYPE_STATION);
+        bool data_slot=is_data_slot(slot, NL80211_IFTYPE_STATION);
         if(data_slot){
             tdma_send_data(hw);
-            if(slot==4||slot==14||slot==24)
-            printk("------slot=%d  tsf=%llu --------\n",slot,tsf);
         } 
     }
     

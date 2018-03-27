@@ -3550,7 +3550,9 @@ void ieee80211_tx_pending(unsigned long data)
 				}
                 break;
 			}
-			if(i!=0)break;
+			if(i!=0){
+				break;
+			}
 		}
 
 		if (skb_queue_empty(&local->pending[i]))
