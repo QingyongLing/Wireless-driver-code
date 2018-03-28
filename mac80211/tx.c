@@ -1337,8 +1337,8 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 	 //修改 2018.3.26
 	struct ieee80211_ops *ops=local->ops;
 	static int fragscount=0;
-	++fragscount;
-	if(fragscount==1000){
+	if(txpending)++fragscount;
+	if(txpending&&fragscount==1000){
        printk("---------ieee80211_tx_frags_byAP called 1000-----------\n");
 	   fragscount=0;
 	}
@@ -1394,7 +1394,7 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 				skb_queue_splice_tail_init(skbs,&local->pending[q]);
 			}
             spin_unlock_irqrestore(&local->queue_stop_reason_lock,flags);
-			static buffercount=0;
+			static int buffercount=0;
 			++buffercount;
 			if(buffercount==100){
 				printk("--------buffer count is 100 now-------\n");
