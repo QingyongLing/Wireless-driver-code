@@ -1515,14 +1515,14 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
 	    return ieee80211_tx_frags_byAP(local,vif,sta,skbs,txpending);
 	
     bool authorized = false;
-	struct sta_info *sta=NULL;
+	struct sta_info *stainfo=NULL;
 	if(vif->type==NL80211_IFTYPE_STATION){
 		struct ieee80211_sub_if_data *sdata = vif_to_sdata(vif);
 	    struct ieee80211_if_managed *mgd = &sdata->u.mgd;
 	    rcu_read_lock();
-	    sta = sta_info_get(sdata, mgd->bssid);
-		if(sta){
-            authorized = test_sta_flag(sta, WLAN_STA_AUTHORIZED);
+	    stainfo = sta_info_get(sdata, mgd->bssid);
+		if(stainfo){
+            authorized = test_sta_flag(stainfo, WLAN_STA_AUTHORIZED);
 		}
         rcu_read_unlock();
 		if(authorized){
