@@ -1423,6 +1423,7 @@ static bool ieee80211_tx_frags_bySTA(struct ieee80211_local *local,
     struct sk_buff *skb, *tmp;
 	unsigned long flags;
     //修改 2018.3.26
+	//NL80211_STA_FLAG_AUTHORIZED
 	struct ieee80211_ops *ops=local->ops;
 
 	skb_queue_walk_safe(skbs, skb, tmp) {
@@ -1512,10 +1513,32 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
 	//修改 2018.2.19
     if(vif->type==NL80211_IFTYPE_AP)
 	    return ieee80211_tx_frags_byAP(local,vif,sta,skbs,txpending);
-
-	if(vif->type==NL80211_IFTYPE_STATION&&vif->bss_conf.assoc){
-        return ieee80211_tx_frags_bySTA(local,vif,sta,skbs,txpending);
+	
+    bool authorized = false;
+	struct sta_info *sta=NULL;
+	if(vif->type==NL80211_IFTYPE_STATION){
+		struct ieee80211_sub_if_data *sdata = vif_to_sdata(vif);
+	    struct ieee80211_if_managed *mgd = &sdata->u.mgd;
+	    rcu_read_lock();
+	    sta = sta_info_get(sdata, mgd->bssid);
+		if(sta){
+            authorized = test_sta_flag(sta, WLAN_STA_AUTHORIZED);
+		}
+        rcu_read_unlock();
+		if(authorized){
+            return ieee80211_tx_frags_bySTA(local,vif,sta,skbs,txpending);
+		}else{
+			static int num=0;
+			++num;
+			if(num==30){
+				printk("----------station not AUTHORIZED------\n");
+				num=0;
+			}
+		}
 	}
+	//if(vif->type==NL80211_IFTYPE_STATION&&vif->bss_conf.assoc){
+    //    return ieee80211_tx_frags_bySTA(local,vif,sta,skbs,txpending);
+	//}
 
 	struct sk_buff *skb, *tmp;
 	unsigned long flags;
