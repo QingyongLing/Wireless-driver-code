@@ -1403,6 +1403,7 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 			return false;
 		}
 
+        /*
         if(canbuffer&&(!data_slot)){
 			skb_queue_splice_init(skbs,&local->pending[q]);
 			spin_unlock_irqrestore(&local->queue_stop_reason_lock,flags);
@@ -1414,6 +1415,7 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 			}
 			return false;
 		}
+		*/
 
 		static int count=0;
 		//if(txpending){
@@ -1527,8 +1529,8 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
 			       bool txpending)
 {
 	//修改 2018.2.19
-    //if(vif->type==NL80211_IFTYPE_AP)
-	//    return ieee80211_tx_frags_byAP(local,vif,sta,skbs,txpending);
+    if(vif->type==NL80211_IFTYPE_AP)
+	    return ieee80211_tx_frags_byAP(local,vif,sta,skbs,txpending);
 	
     bool authorized = false;
 	struct sta_info *stainfo=NULL;
