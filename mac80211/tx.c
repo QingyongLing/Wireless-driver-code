@@ -1336,6 +1336,12 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 	unsigned long flags;
 	 //修改 2018.3.26
 	struct ieee80211_ops *ops=local->ops;
+	static int fragscount=0;
+	++fragscount;
+	if(fragscount==1000){
+       printk("---------ieee80211_tx_frags_byAP called 1000-----------\n");
+	   fragscount=0;
+	}
 
 	skb_queue_walk_safe(skbs, skb, tmp) {
 		struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
