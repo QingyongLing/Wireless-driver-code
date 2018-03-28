@@ -1207,6 +1207,8 @@ static void ath_buf_set_rate(struct ath_softc *sc, struct ath_buf *bf,
 		rix = rates[i].idx;
 		info->rates[i].Tries = rates[i].count;
         //修改 2018.3.16
+		//此处禁用自动速率调整会导致很大程度的丢包
+		//为何产生丢包还需要进一步探查，暂时先注释掉
 		/*
 		rates[i].flags |= IEEE80211_TX_RC_MCS;
 		#if MINSTREL_MAX_STREAMS >= 3

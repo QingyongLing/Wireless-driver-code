@@ -3429,8 +3429,8 @@ static bool ieee80211_prepare_and_rx_handle(struct ieee80211_rx_data *rx,
 	 //修改 2018.3.28
 	static int receive=0;
 	++receive;
-	if(receive==100){
-		printk("--------receive 100 packet--------\n");
+	if(receive==1000){
+		printk("--------receive 1000 packet--------\n");
 		receive=0;
 	}
 	return true;
