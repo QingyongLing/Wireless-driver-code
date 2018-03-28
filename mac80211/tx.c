@@ -1527,8 +1527,8 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
 			       bool txpending)
 {
 	//修改 2018.2.19
-    if(vif->type==NL80211_IFTYPE_AP)
-	    return ieee80211_tx_frags_byAP(local,vif,sta,skbs,txpending);
+    //if(vif->type==NL80211_IFTYPE_AP)
+	//    return ieee80211_tx_frags_byAP(local,vif,sta,skbs,txpending);
 	
     bool authorized = false;
 	struct sta_info *stainfo=NULL;
