@@ -1362,6 +1362,12 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 						flags);
 					ieee80211_purge_tx_queue(&local->hw,
 								 skbs);
+					static int purgetx=0;
+					++purgetx;
+					if(purgetx==100){
+						printk("------purgetx is 100 now------\n");
+						purgetx=0;
+					}
 					return true;
 				}
 			} 
@@ -1371,6 +1377,7 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 		u64 tsf= ops->get_tsf(&(local->hw),NULL);
 		int slot=tsf_to_slot(tsf);
 		bool data_slot=is_data_slot(slot,vif->type);
+		data_slot=true;
 		bool canbuffer=true;
         if(q==0)canbuffer=false;
 		
@@ -1381,6 +1388,12 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 				skb_queue_splice_tail_init(skbs,&local->pending[q]);
 			}
             spin_unlock_irqrestore(&local->queue_stop_reason_lock,flags);
+			static buffercount=0;
+			++buffercount;
+			if(buffercount==100){
+				printk("--------buffer count is 100 now-------\n");
+				buffercount=0;
+			}
 			return false;
 		}
 
