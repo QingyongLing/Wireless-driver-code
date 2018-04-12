@@ -3058,6 +3058,8 @@ static bool ieee80211_assoc_success(struct ieee80211_sub_if_data *sdata,
 	/* set AID and assoc capability,
 	 * ieee80211_set_associated() will tell the driver */
 	bss_conf->aid = aid;
+	//修改　2018.4.12
+	printk("----set aid=%d -----\n",aid);
 	bss_conf->assoc_capability = capab_info;
 	ieee80211_set_associated(sdata, cbss, changed);
 

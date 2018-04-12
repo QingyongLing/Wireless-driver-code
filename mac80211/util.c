@@ -3431,3 +3431,32 @@ bool is_data_slot(int slot, enum nl80211_iftype type){
 	return false;
 }
 EXPORT_SYMBOL(is_data_slot);
+static int AID[128];
+void set_used_aid(int aid){
+    static bool init=false;
+	if(!init){
+		int i=0;
+		for(i=0;i<128;++i){
+			AID[i]=0;
+		}
+		init=true;
+	}
+	if(aid>128||aid<=0){
+		printk("--------AID is ERROR--------\n");
+	}else{
+		AID[aid-1]=1;
+	}
+}
+EXPORT_SYMBOL(set_used_aid);
+void free_used_aid(int aid){
+	if(aid>128||aid<=0){
+		printk("--------AID is ERROR--------\n");
+	}else{
+		AID[aid-1]=0;
+	}
+}
+EXPORT_SYMBOL(free_used_aid);
+int* get_used_aid(void){
+    return AID;
+}
+EXPORT_SYMBOL(get_used_aid);
