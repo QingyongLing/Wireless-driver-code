@@ -877,6 +877,7 @@ minstrel_ht_set_rate(struct minstrel_priv *mp, struct minstrel_ht_sta *mi,
 	     group->streams > 1)) {
 		ratetbl->rate[offset].count = ratetbl->rate[offset].count_rts;
 		//修改 2018.3.22 disable RTSCTS
+		//@IEEE80211_TX_RC_USE_RTS_CTS: Use RTS/CTS exchange for this rate.
 		//flags |= IEEE80211_TX_RC_USE_RTS_CTS;
 	}
 
