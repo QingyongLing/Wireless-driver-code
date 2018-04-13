@@ -35,6 +35,9 @@
 #include "led.h"
 #include "wep.h"
 
+//修改　2018.4.13
+#include <linux/ieee80211.h>
+
 /* privid for wiphys to determine whether they belong to us or not */
 const void *const mac80211_wiphy_privid = &mac80211_wiphy_privid;
 
@@ -3431,33 +3434,3 @@ bool is_data_slot(int slot, enum nl80211_iftype type){
 	return false;
 }
 EXPORT_SYMBOL(is_data_slot);
-static int AID[128];
-void set_used_aid(int aid){
-    static bool init=false;
-	if(!init){
-		int i=0;
-		for(i=0;i<128;++i){
-			AID[i]=0;
-		}
-		init=true;
-	}
-	if(aid>128||aid<=0){
-		printk("--------AID is ERROR--------\n");
-	}else{
-		AID[aid-1]=1;
-		printk("-------set aid %d used-------\n");
-	}
-}
-EXPORT_SYMBOL(set_used_aid);
-void free_used_aid(int aid){
-	if(aid>128||aid<=0){
-		printk("--------AID is ERROR--------\n");
-	}else{
-		AID[aid-1]=0;
-	}
-}
-EXPORT_SYMBOL(free_used_aid);
-int* get_used_aid(void){
-    return AID;
-}
-EXPORT_SYMBOL(get_used_aid);

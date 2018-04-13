@@ -5626,8 +5626,5 @@ int get_tdma_slot(void);
 int tsf_to_slot(u64 tsf);
 bool is_AP_beacon_slot(int slot);
 bool is_data_slot(int slot, enum nl80211_iftype type);
-void set_used_aid(int aid);
-void free_used_aid(int aid);
-int* get_used_aid(void);
 #endif /* MAC80211_H */
 
