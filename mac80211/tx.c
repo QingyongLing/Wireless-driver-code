@@ -1392,13 +1392,6 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 			++buffercount;
 			if(buffercount==100){
 				printk("--------buffer count is 100 now-------\n");
-				int *aid=get_used_aid();
-				int i=0;
-				for(i=0;i<128;i++){
-					if(aid[i]){
-						printk("----this aid is used %d ------\n",i+1);
-					}
-				}
 				buffercount=0;
 			}
 			return false;
@@ -3605,6 +3598,45 @@ void ieee80211_tx_pending(unsigned long data)
 	rcu_read_unlock();
 }
 
+//修改  2018.4.13
+int count_used_aid(int *used_aid,int size){
+	//count the used aid number
+    int i=0,count=0;
+	for(i=0;i<size;i++){
+		if(used_aid[i]){
+			++count;
+		}
+	}
+	return count;
+}
+
+void genarate_slot_allocation_info(u8 *pos,int *aid, int size, int count){
+    int i=0,j=0,cur=0,used=count;
+    for(i=0;i<size;++i){
+        if(used<=0)break;
+        if(aid[i]){
+            --used;
+            ++cur;
+            *pos++=0;
+            *pos++=i+1;
+            u8 arr[6]={0,0,0,0,0,0};
+            for(j=cur;j<46;j+=count+1){
+                int temp=7-j%8;
+                u8 num=1;
+                arr[j/8]|=num<<temp;
+            }
+            for(j=0;j<6;++j){
+                *pos++=arr[j];
+            }
+        }
+    }
+    while(used>0){
+        for(j=0;j<8;++j)
+            *pos++=0;
+        --used;
+    }
+}
+
 /* functions for drivers to get certain frames */
 
 static void __ieee80211_beacon_add_tim(struct ieee80211_sub_if_data *sdata,
@@ -3671,17 +3703,14 @@ static void __ieee80211_beacon_add_tim(struct ieee80211_sub_if_data *sdata,
 		*pos++ = 0; /* Part Virt Bitmap */
 	}
 	//修改 2018.3.9
-	 skb_put(skb, 4);
-	 static u8 index=0;
-	 ++index;
-	 //printk("beacon index is %u------------\n",index)
-	 *pos++ = WLAN_EID_SLOT_MAP;
-	 *pos++ = 2;
-	 *pos++ = index;
-     *pos++ = 1;
-	 if(index==200){
-		 index=0;
-	 }
+	int *used_aid=get_used_aid();
+	int count=count_used_aid(used_aid);
+	int len=count*8;
+	skb_put(skb, 2+len);
+	*pos++ = WLAN_EID_SLOT_MAP;
+	*pos++ = len;
+	//AID范围是1-2007为了简便，只假设从1到128变化，因此没有用位保存AID了
+	genarate_slot_allocation_info(pos,used_aid,128,count);
 }
 
 static int ieee80211_beacon_add_tim(struct ieee80211_sub_if_data *sdata,
