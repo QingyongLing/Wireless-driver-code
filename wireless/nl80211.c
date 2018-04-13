@@ -4282,7 +4282,7 @@ static int nl80211_set_station(struct sk_buff *skb, struct genl_info *info)
 	//修改　2018.4.12
 	if (info->attrs[NL80211_ATTR_STA_AID]){
 		set_used_aid(params.aid);
-		printk("--------set associated STA with AID=%u--------\n",params.aid);
+		//printk("--------set associated STA with AID=%u--------\n",params.aid);
 	}
 
 	if (info->attrs[NL80211_ATTR_STA_LISTEN_INTERVAL])
@@ -4579,13 +4579,13 @@ static int nl80211_del_station(struct sk_buff *skb, struct genl_info *info)
 
 	memset(&params, 0, sizeof(params));
 
-    //修改 2018.4.12
+    //修改  2018.4.12
 	if (info->attrs[NL80211_ATTR_STA_AID]){
 		u16 aid = nla_get_u16(info->attrs[NL80211_ATTR_STA_AID]);
 		free_used_aid(aid);
-		printk("--------del deassociated STA with AID=%u--------\n",aid);
+		//printk("--------del deassociated STA with AID=%u--------\n",aid);
 	}else{
-		printk("--------invalid aid--------\n");
+		//printk("--------invalid aid--------\n");
 	}
 
 	if (info->attrs[NL80211_ATTR_MAC])
@@ -13459,7 +13459,7 @@ void nl80211_exit(void)
 }
 
 //修改　2018.4.13
-static int AID[128];
+int AID[128];
 void set_used_aid(int aid){
     static bool init=false;
 	if(!init){
@@ -13473,7 +13473,7 @@ void set_used_aid(int aid){
 		printk("--------AID is ERROR--------\n");
 	}else{
 		AID[aid-1]=1;
-		printk("-------set aid %d used-------\n");
+		printk("-------Association: set aid %d used-------\n",aid);
 	}
 }
 void free_used_aid(int aid){
@@ -13481,5 +13481,9 @@ void free_used_aid(int aid){
 		printk("--------AID is ERROR--------\n");
 	}else{
 		AID[aid-1]=0;
+		printk("-------Deassociation: set aid %d free-------\n",aid);
 	}
 }
+int* get_used_aid(void){
+    return AID;
+}EXPORT_SYMBOL(get_used_aid);

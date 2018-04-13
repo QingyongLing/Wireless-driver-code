@@ -2580,6 +2580,5 @@ static inline bool ieee80211_action_contains_tpc(struct sk_buff *skb)
 //修改 2018.4.13
 void set_used_aid(int aid);
 void free_used_aid(int aid);
-extern static int AID[128];
 int* get_used_aid(void);
 #endif /* LINUX_IEEE80211_H */

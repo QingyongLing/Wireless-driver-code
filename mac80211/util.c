@@ -3434,6 +3434,3 @@ bool is_data_slot(int slot, enum nl80211_iftype type){
 	return false;
 }
 EXPORT_SYMBOL(is_data_slot);
-int* get_used_aid(void){
-    return AID;
-}EXPORT_SYMBOL(get_used_aid);
