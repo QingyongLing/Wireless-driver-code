@@ -1392,6 +1392,13 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 			++buffercount;
 			if(buffercount==100){
 				printk("--------buffer count is 100 now-------\n");
+				int *aid=get_used_aid();
+				int i=0;
+				for(i=0;i<128;i++){
+					if(aid[i]){
+						printk("----this aid is used %d ------\n",i+1);
+					}
+				}
 				buffercount=0;
 			}
 			return false;
