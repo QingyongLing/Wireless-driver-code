@@ -13483,6 +13483,3 @@ void free_used_aid(int aid){
 		AID[aid-1]=0;
 	}
 }
-int* get_used_aid(void){
-    return AID;
-}
