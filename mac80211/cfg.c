@@ -1165,10 +1165,6 @@ static int sta_apply_parameters(struct ieee80211_local *local,
 	if (params->aid)
 		sta->sta.aid = params->aid;
 
-	if(params->aid){
-		printk("-----add this aid %u in used---------\n",params->aid);
-	}
-
 	/*
 	 * Some of the following updates would be racy if called on an
 	 * existing station, via ieee80211_change_station(). However,
