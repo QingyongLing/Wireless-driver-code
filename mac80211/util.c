@@ -3445,6 +3445,7 @@ void set_used_aid(int aid){
 		printk("--------AID is ERROR--------\n");
 	}else{
 		AID[aid-1]=1;
+		printk("-------set aid %d used-------\n");
 	}
 }
 EXPORT_SYMBOL(set_used_aid);
