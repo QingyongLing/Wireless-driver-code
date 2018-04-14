@@ -1974,6 +1974,9 @@ static void ieee80211_set_disassoc(struct ieee80211_sub_if_data *sdata,
 	struct ieee80211_if_managed *ifmgd = &sdata->u.mgd;
 	struct ieee80211_local *local = sdata->local;
 	u32 changed = 0;
+	//修改 2018.4.14
+	printk("----Disassoc: set aid=0 -----\n");
+    set_STA_AID(0);
 
 	sdata_assert_lock(sdata);
 
@@ -3059,7 +3062,9 @@ static bool ieee80211_assoc_success(struct ieee80211_sub_if_data *sdata,
 	 * ieee80211_set_associated() will tell the driver */
 	bss_conf->aid = aid;
 	//修改　2018.4.12
-	printk("----set aid=%d -----\n",aid);
+	printk("----Assoc: set aid=%d -----\n",aid);
+    set_STA_AID(aid);
+
 	bss_conf->assoc_capability = capab_info;
 	ieee80211_set_associated(sdata, cbss, changed);
 

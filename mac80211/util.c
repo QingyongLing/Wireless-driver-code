@@ -1096,8 +1096,18 @@ u32 ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
 		//修改 2018.3.9
 		case WLAN_EID_SLOT_MAP:
             {
-				u8 index=*pos;
-		        //printk("WLAN_EID_SLOT_MAP and index is %u\n",index);
+				int sta_num=elen/8;
+				printk("------receive Beacon indicate sta num is %d------",sta_num);
+				int j=0;
+				u16 cur_AID=get_STA_AID();
+				for(j=0;j<sta_num;++j){
+                    u16 *pAID=pos+j*8;
+					u16 temp_AID=*pAID;
+					if(temp_AID==cur_AID){
+						set_STA_slot_alloc(pos+j*8+2);
+						break;
+					}
+				}
 			}
 			break;
 		default:
@@ -3391,16 +3401,32 @@ void tdma_send_data(struct ieee80211_hw *hw){
 	}
 }
 EXPORT_SYMBOL(tdma_send_data);
-//修改 2018.3.22
-static int is_slot=0;
-int set_tdma_slot(int isslot){
-	is_slot=isslot;
+//修改 2018.4.14
+static int AID_count=0;
+void set_used_AID_count(int count){
+	AID_count=count;
 }
-EXPORT_SYMBOL(set_tdma_slot);
-int get_tdma_slot(){
-	return is_slot;
+EXPORT_SYMBOL(set_used_AID_count);
+u8 slot_alloc[6] = {0,0,0,0,0,0};
+void set_STA_slot_alloc(u8 *pos){
+    int i=0;
+	printk("------receive slot alloc info: ");
+	for(i=0;i<6;++i){
+		slot_alloc[i]=*pos++;
+		printk("%x",slot_alloc[i]);
+	}
+	printk("--------\n");
 }
-EXPORT_SYMBOL(get_tdma_slot);
+EXPORT_SYMBOL(set_STA_slot_alloc);
+static u16 STA_AID=0;
+void set_STA_AID(u16 aid){
+    STA_AID=aid;
+}
+EXPORT_SYMBOL(set_STA_AID);
+u16  get_STA_AID(void){
+    return STA_AID;
+}
+EXPORT_SYMBOL(get_STA_AID);
 #include <asm/div64.h>
 int tsf_to_slot(u64 tsf){
 	//u32 tdma_tbtt_next=106144;  next_swba=100000us

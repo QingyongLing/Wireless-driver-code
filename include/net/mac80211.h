@@ -5619,9 +5619,11 @@ struct sk_buff *ieee80211_tx_dequeue(struct ieee80211_hw *hw,
 
 //修改 2018.2.19
 void tdma_send_data(struct ieee80211_hw *hw);
-//修改 2018.3.22
-int set_tdma_slot(int isslot);
-int get_tdma_slot(void);
+//修改 2018.4.14
+void set_used_AID_count(int count);
+void set_STA_slot_alloc(u8 *pos);
+void set_STA_AID(u16 aid);
+u16  get_STA_AID(void);
 //修改 2018.3.25
 int tsf_to_slot(u64 tsf);
 bool is_AP_beacon_slot(int slot);

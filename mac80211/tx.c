@@ -3706,6 +3706,7 @@ static void __ieee80211_beacon_add_tim(struct ieee80211_sub_if_data *sdata,
     int *used_aid=get_used_aid();
 	//AID范围是1-2007为了简便，只假设从1到128变化，因此没有用位保存AID了
     int count=count_used_aid(used_aid,128);
+	set_used_AID_count(count);
     int len=count*8;
 	skb_put(skb, 2+len);
 	*pos++ = WLAN_EID_SLOT_MAP;
