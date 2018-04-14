@@ -1093,17 +1093,18 @@ u32 ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
 			else
 				elem_parse_failed = true;
 			break;
-		//修改 2018.3.9
+		//修改 2018.4.14
 		case WLAN_EID_SLOT_MAP:
             {
 				int sta_num=elen/8;
-				printk("------receive Beacon indicate sta num is %d------",sta_num);
+				//printk("------receive Beacon indicate sta num is %d------\n",sta_num);
 				int j=0;
 				u16 cur_AID=get_STA_AID();
+				//if sta_num is 0,do not set STA slot alloc
 				for(j=0;j<sta_num;++j){
                     u16 *pAID=pos+j*8;
 					u16 temp_AID=*pAID;
-					if(temp_AID==cur_AID){
+					if(cur_AID!=0 && temp_AID==cur_AID){
 						set_STA_slot_alloc(pos+j*8+2);
 						break;
 					}
@@ -3410,12 +3411,12 @@ EXPORT_SYMBOL(set_used_AID_count);
 u8 slot_alloc[6] = {0,0,0,0,0,0};
 void set_STA_slot_alloc(u8 *pos){
     int i=0;
-	printk("------receive slot alloc info: ");
+	//printk("------receive slot alloc info: ");
 	for(i=0;i<6;++i){
 		slot_alloc[i]=*pos++;
-		printk("%x",slot_alloc[i]);
+		//printk("%x",slot_alloc[i]);
 	}
-	printk("--------\n");
+	//printk("--------\n");
 }
 EXPORT_SYMBOL(set_STA_slot_alloc);
 static u16 STA_AID=0;
@@ -3449,13 +3450,38 @@ bool is_AP_beacon_slot(int slot){
 	return slot<3?true:false;
 }
 EXPORT_SYMBOL(is_AP_beacon_slot);
+static bool dynamic_slot_alloc=true;
+//the slot will be 0 1 2...49,0-3 is for Beacon, 4-49 is for data
+//assert 4, 4 + (AID_count+1)*k is for AP
 bool is_data_slot(int slot, enum nl80211_iftype type){
 	if(is_AP_beacon_slot(slot))
 	    return false;
     if(type==NL80211_IFTYPE_AP){
-        return slot%2==0?false:true;
+		if(dynamic_slot_alloc){
+           if(AID_count==0)return true;
+		   else{
+               if((slot-4)%(AID_count+1))==0)
+			       return true;
+			   else
+			       return false;
+		   }
+		}else{
+           return slot%2==0?false:true;
+		}
 	}else if(type==NL80211_IFTYPE_STATION){
-        return slot%2==0?true:false;
+		if(dynamic_slot_alloc){
+			//remove the Beacon slot
+			slot-=4;
+			int bit=7-slot%8;
+            int index=slot/8;
+            u8 test=1;
+            if(slot_alloc[index]&(test<<bit))
+                return true;
+            else
+                return false;
+		}else{
+            return slot%2==0?true:false;
+		}
 	}
 	return false;
 }
