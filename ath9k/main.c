@@ -1857,8 +1857,6 @@ static void ath9k_set_tsf(struct ieee80211_hw *hw,
 	ath9k_hw_settsf64(sc->sc_ah, tsf);
 	ath9k_ps_restore(sc);
 	mutex_unlock(&sc->mutex);
-	//修改 2018.4.14
-	printk("------ath9k_set_tsf called!!!!!!!!!!!!!!!!!!!!!!!--------\n");
 }
 
 static void ath9k_reset_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
