@@ -3460,7 +3460,7 @@ bool is_data_slot(int slot, enum nl80211_iftype type){
 		if(dynamic_slot_alloc){
            if(AID_count==0)return true;
 		   else{
-               if((slot-4)%(AID_count+1))==0)
+               if((slot-4)%(AID_count+1)==0)
 			       return true;
 			   else
 			       return false;
