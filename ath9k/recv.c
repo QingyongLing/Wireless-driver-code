@@ -797,7 +797,7 @@ static void ath9k_process_tsf(struct ath_rx_status *rs,
 	    unlikely(tsf_lower - rs->rs_tstamp > 0x10000000))
 		rxs->mactime += 0x100000000ULL;
 	//修改 2018.4.14
-	printk("------called ath9k_process_tsf tsf=%llu --------\n",tsf);
+	//printk("------called ath9k_process_tsf tsf=%llu --------\n",tsf);
 }
 
 /*
