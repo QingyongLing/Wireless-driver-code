@@ -819,14 +819,15 @@ static void ath9k_tx(struct ieee80211_hw *hw,
 
     //修改  2018.4.15
 	struct ath_hw *ah = sc->sc_ah;
-	u64 tsf = ath9k_hw_gettsf64(ah);
+	u64 tsf1 = ath9k_hw_gettsf64(ah);
 	
 	if (ath_tx_start(hw, skb, &txctl) != 0) {
 		ath_dbg(common, XMIT, "TX failed\n");
 		TX_STAT_INC(txctl.txq->axq_qnum, txfailed);
 		goto exit;
 	}
-    printk("-------TX start %p  tsf is %llu -------\n",skb,tsf);
+	u64 tsf2 = ath9k_hw_gettsf64(ah);
+    printk("-------TX start %p  tsf1 is %llu tsf2 is %llu-------\n",skb,tsf1,tsf2);
 	return;
 exit:
 	ieee80211_free_txskb(hw, skb);
