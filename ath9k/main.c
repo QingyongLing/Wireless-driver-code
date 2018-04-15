@@ -818,10 +818,9 @@ static void ath9k_tx(struct ieee80211_hw *hw,
 	ath_dbg(common, XMIT, "transmitting packet, skb: %p\n", skb);
 
     //修改  2018.4.15
-	 //修改 2018.4.15
 	struct ath_hw *ah = sc->sc_ah;
 	u64 tsf = ath9k_hw_gettsf64(ah);
-	prink("-------TX start %p  tsf is %llu -------\n",skb,tsf);
+	printk("-------TX start %p  tsf is %llu -------\n",skb,tsf);
 	
 	if (ath_tx_start(hw, skb, &txctl) != 0) {
 		ath_dbg(common, XMIT, "TX failed\n");
