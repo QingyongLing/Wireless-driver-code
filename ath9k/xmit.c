@@ -2512,7 +2512,7 @@ static void ath_tx_complete(struct ath_softc *sc, struct sk_buff *skb,
     //修改 2018.4.15
 	struct ath_hw *ah = sc->sc_ah;
 	u64 tsf = ath9k_hw_gettsf64(ah);
-	prink("------TX complete %p  tsf is %llu ------\n",skb,tsf);
+	printk("------TX complete %p  tsf is %llu ------\n",skb,tsf);
 	
 	ath_dbg(common, XMIT, "TX complete: skb: %p\n", skb);
     
