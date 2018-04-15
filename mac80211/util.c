@@ -3486,3 +3486,19 @@ bool is_data_slot(int slot, enum nl80211_iftype type){
 	return false;
 }
 EXPORT_SYMBOL(is_data_slot);
+//修改 2018.4.15
+static struct sk_buff *last_send_skb=NULL;
+static u64 last_send_tsf=0;
+void set_last_skb(struct sk_buff *skb,u64 tsf){
+     last_send_skb=skb;
+	 last_send_tsf=tsf;
+}
+EXPORT_SYMBOL(set_last_skb);
+struct sk_buff *get_last_skb(){
+     return last_send_skb;
+}
+EXPORT_SYMBOL(get_last_skb);
+u64 get_last_tsf(){
+    return last_send_tsf;
+}
+EXPORT_SYMBOL(get_last_tsf);

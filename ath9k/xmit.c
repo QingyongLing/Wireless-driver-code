@@ -2510,9 +2510,17 @@ static void ath_tx_complete(struct ath_softc *sc, struct sk_buff *skb,
 	unsigned long flags;
 
     //修改 2018.4.15
+	static int num=0;
 	struct ath_hw *ah = sc->sc_ah;
 	u64 tsf = ath9k_hw_gettsf64(ah);
-	printk("------TX complete %p  tsf is %llu ------\n",skb,tsf);
+	struct sk_buff *last_skb=get_last_skb();
+	u64 last_tsf=get_last_tsf();
+	++num;
+	if(num==50){
+		num=0;
+        printk("------TX start: %p  tsf  %llu  complete: %p  tsf %llu ------\n",
+		       last_skb,last_tsf,skb,tsf);
+	}
 	
 	ath_dbg(common, XMIT, "TX complete: skb: %p\n", skb);
     
