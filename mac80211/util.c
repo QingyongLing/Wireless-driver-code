@@ -3494,11 +3494,11 @@ void set_last_skb(struct sk_buff *skb,u64 tsf){
 	 last_send_tsf=tsf;
 }
 EXPORT_SYMBOL(set_last_skb);
-struct sk_buff *get_last_skb(){
+struct sk_buff *get_last_skb(void){
      return last_send_skb;
 }
 EXPORT_SYMBOL(get_last_skb);
-u64 get_last_tsf(){
+u64 get_last_tsf(void){
     return last_send_tsf;
 }
 EXPORT_SYMBOL(get_last_tsf);

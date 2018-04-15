@@ -5630,7 +5630,7 @@ bool is_AP_beacon_slot(int slot);
 bool is_data_slot(int slot, enum nl80211_iftype type);
 //修改 2018.4.15
 void set_last_skb(struct sk_buff *skb,u64 tsf);
-struct sk_buff *get_last_skb();
-u64 get_last_tsf();
+struct sk_buff *get_last_skb(void);
+u64 get_last_tsf(void);
 #endif /* MAC80211_H */
 
