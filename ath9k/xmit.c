@@ -2760,6 +2760,8 @@ void ath_tx_edma_tasklet(struct ath_softc *sc)
 
 		/* Process beacon completions separately */
 		if (ts.qid == sc->beacon.beaconq) {
+			//修改 2018.4.14
+			printk("-----ath_tx_edma_tasklet called send beacon--------\n");
 			sc->beacon.tx_processed = true;
 			sc->beacon.tx_last = !(ts.ts_status & ATH9K_TXERR_MASK);
 

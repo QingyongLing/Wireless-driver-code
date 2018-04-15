@@ -2144,6 +2144,8 @@ static int ath9k_tx_last_beacon(struct ieee80211_hw *hw)
 			goto skip;
 
 		status = ath9k_hw_txprocdesc(ah, bf->bf_desc, &ts);
+		//修改 2018.4.15
+		printk("-------ath9k_tx_last_beacon called------");
 		if (status == -EINPROGRESS)
 			goto skip;
 
