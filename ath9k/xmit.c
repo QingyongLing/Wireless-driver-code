@@ -2509,8 +2509,13 @@ static void ath_tx_complete(struct ath_softc *sc, struct sk_buff *skb,
 	int padpos, padsize;
 	unsigned long flags;
 
+    //修改 2018.4.15
+	struct ath_hw *ah = sc->sc_ah;
+	u64 tsf = ath9k_hw_gettsf64(ah);
+	prink("------TX complete %p  tsf is %llu ------\n",skb,tsf);
+	
 	ath_dbg(common, XMIT, "TX complete: skb: %p\n", skb);
-
+    
 	if (sc->sc_ah->caldata)
 		set_bit(PAPRD_PACKET_SENT, &sc->sc_ah->caldata->cal_flags);
 
@@ -2760,8 +2765,8 @@ void ath_tx_edma_tasklet(struct ath_softc *sc)
 
 		/* Process beacon completions separately */
 		if (ts.qid == sc->beacon.beaconq) {
-			//修改 2018.4.15
-			printk("-----complete send beacon: %lu--------\n",ts.ts_tstamp);
+			//修改 2018.4.15 use for TSF sys test
+			//printk("-----complete send beacon: %lu--------\n",ts.ts_tstamp);
 			sc->beacon.tx_processed = true;
 			sc->beacon.tx_last = !(ts.ts_status & ATH9K_TXERR_MASK);
 

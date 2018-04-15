@@ -3340,29 +3340,13 @@ static void ieee80211_rx_mgmt_beacon(struct ieee80211_sub_if_data *sdata,
 	bssid = ifmgd->associated->bssid;
 
     //修改 2018.2.28
-	u8 bssidarr[ETH_ALEN];
-	struct ieee80211_ops *tempops=local->ops;
-	u64 tsf= tempops->get_tsf(&(local->hw),&(sdata->vif));
-	u64 timestamp=le64_to_cpu(mgmt->u.beacon.timestamp);
-	printk("--------beacon.timestamp is %llu ------------\n",timestamp);
-	/*
-	if(tempops->set_SWBA){
-		tempops->set_SWBA(&(local->hw),4000);
-	}else{
-        printk("-----set_SWBA is NULL-----\n");
-	}
-	*/
-	/*
-	if(tsf>timestamp){
-		u64 temp=tsf-timestamp;
-		printk("(2)tsf>beacon.timestamp tsf:%llu timestamp:%llu dif:%llu\n",
-		tsf,timestamp,temp);
-	}else{
-		u64 temp=timestamp-tsf;
-		printk("(2)tsf<=beacon.timestamp tsf:%llu timestamp:%llu dif:%llu\n",
-		tsf,timestamp,temp);
-	}
-	*/
+	//u8 bssidarr[ETH_ALEN];
+	//struct ieee80211_ops *tempops=local->ops;
+	//u64 tsf= tempops->get_tsf(&(local->hw),&(sdata->vif));
+	//u64 timestamp=le64_to_cpu(mgmt->u.beacon.timestamp);
+	//修改 2018.4.15
+	//Use for TSF sys test,print beacon timestamp
+	//printk("--------beacon.timestamp is %llu ------------\n",timestamp);
 	//memcpy(bssidarr, bssid, ETH_ALEN);
 	//int i=0;
 	//for(i=0;i<ETH_ALEN;++i)

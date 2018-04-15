@@ -859,9 +859,10 @@ static int ath9k_rx_skb_preprocess(struct ath_softc *sc,
 	hdr = (struct ieee80211_hdr *) (skb->data + ah->caps.rx_status_len);
 
     //修改 2018.4.14
-	if (ath_is_mybeacon(common, hdr)){
-        printk("------receive packet at tsf=%lu --------\n",rx_stats->rs_tstamp);
-	}
+	//TSF sys test,print the time of hardware receive Beacon frame
+	//if (ath_is_mybeacon(common, hdr)){
+    //    printk("------receive packet at tsf=%lu --------\n",rx_stats->rs_tstamp);
+	//}
 	ath9k_process_tsf(rx_stats, rx_status, tsf);
 	ath_debug_stat_rx(sc, rx_stats);
 
