@@ -2516,7 +2516,7 @@ static void ath_tx_complete(struct ath_softc *sc, struct sk_buff *skb,
 	struct sk_buff *last_skb=get_last_skb();
 	u64 last_tsf=get_last_tsf();
 	++num;
-	if(num==50){
+	if(num==20){
 		num=0;
         printk("------TX start: %p  tsf  %llu  complete: %p  tsf %llu ------\n",
 		       last_skb,last_tsf,skb,tsf);
