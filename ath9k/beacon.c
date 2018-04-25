@@ -439,7 +439,14 @@ void ath9k_beacon_tasklet(unsigned long data)
 		ath9k_hw_puttxbuf(ah, sc->beacon.beaconq, bf->bf_daddr);
 
         //修改 2018.3.11
-        //u64 tsf = ath9k_hw_gettsf64(ah);
+		static int count=0;
+		++count;
+		if(count==20){
+            u64 tsf = ath9k_hw_gettsf64(ah);
+			tsf+=5000000;
+			ath9k_set_tsf(sc->hw,vif,tsf);
+			count=0;
+		}
 		//printk("ath9k_hw_txstart called at %llu\n",tsf);
 		if (!edma)
 			ath9k_hw_txstart(ah, sc->beacon.beaconq);

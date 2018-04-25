@@ -2518,8 +2518,8 @@ static void ath_tx_complete(struct ath_softc *sc, struct sk_buff *skb,
 	++num;
 	if(num==20){
 		num=0;
-        printk("------TX start: %p  tsf  %llu  complete: %p  tsf %llu ------\n",
-		       last_skb,last_tsf,skb,tsf);
+        //printk("------TX start: %p  tsf  %llu  complete: %p  tsf %llu ------\n",
+		//       last_skb,last_tsf,skb,tsf);
 	}
 	
 	ath_dbg(common, XMIT, "TX complete: skb: %p\n", skb);
