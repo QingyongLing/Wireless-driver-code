@@ -444,7 +444,11 @@ void ath9k_beacon_tasklet(unsigned long data)
 		if(count==20){
             u64 tsf = ath9k_hw_gettsf64(ah);
 			tsf+=5000000;
-			ath9k_set_tsf(sc->hw,vif,tsf);
+			mutex_lock(&sc->mutex);
+	        ath9k_ps_wakeup(sc);
+	        ath9k_hw_settsf64(sc->sc_ah, tsf);
+	        ath9k_ps_restore(sc);
+	        mutex_unlock(&sc->mutex);
 			count=0;
 		}
 		//printk("ath9k_hw_txstart called at %llu\n",tsf);
@@ -494,7 +498,6 @@ static void ath9k_beacon_config_sta(struct ath_hw *ah,
     //修改 2018.3.16
 	//周期
 	int flags=0;
-	u64 tsf=0;
 	printk("----------STA set SWBA Timer----------\n");
 	u32 tdma_slot=2000;
 	u32 next_swba=100000;
