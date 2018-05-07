@@ -439,6 +439,8 @@ void ath9k_beacon_tasklet(unsigned long data)
 		ath9k_hw_puttxbuf(ah, sc->beacon.beaconq, bf->bf_daddr);
 
         //修改 2018.3.11
+		/*
+		验证tstamp值是否为同步后的值
 		static int count=0;
 		++count;
 		if(count==20){
@@ -451,6 +453,7 @@ void ath9k_beacon_tasklet(unsigned long data)
 	        mutex_unlock(&sc->mutex);
 			count=0;
 		}
+		*/
 		//printk("ath9k_hw_txstart called at %llu\n",tsf);
 		if (!edma)
 			ath9k_hw_txstart(ah, sc->beacon.beaconq);
