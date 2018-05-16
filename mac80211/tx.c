@@ -1377,11 +1377,8 @@ static bool ieee80211_tx_frags_byAP(struct ieee80211_local *local,
 		u64 tsf= ops->get_tsf(&(local->hw),NULL);
 		int slot=tsf_to_slot(tsf);
 		bool data_slot=is_data_slot(slot,vif->type);
-		data_slot=true;
-		bool canbuffer=true;
-        if(q==0)canbuffer=false;
 		
-		if(canbuffer&&(local->queue_stop_reasons[q]||(!txpending))){
+		if(local->queue_stop_reasons[q]||(!txpending)||(!data_slot)){
 			if(txpending){
 				skb_queue_splice_init(skbs,&local->pending[q]);
 			}else{
@@ -1470,15 +1467,9 @@ static bool ieee80211_tx_frags_bySTA(struct ieee80211_local *local,
         //tsf to tdma slot
 		u64 tsf= ops->get_tsf(&(local->hw),NULL);
 		int slot=tsf_to_slot(tsf);
-		bool dataslot=is_data_slot(slot,vif->type);
-		dataslot=true;
-		bool canbuffer=true;
-        if(q==0)canbuffer=false;
-
-		if(canbuffer&&(local->queue_stop_reasons[q]||(!txpending))){
-			if(q==0){
-				printk("--------bufferd q=0 --------\n");
-			}
+		bool data_slot=is_data_slot(slot,vif->type);
+		
+		if(local->queue_stop_reasons[q]||(!txpending)||(!data_slot)){
 			if(txpending){
 				skb_queue_splice_init(skbs,&local->pending[q]);
 			}else{
