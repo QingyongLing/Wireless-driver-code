@@ -1468,6 +1468,15 @@ static bool ieee80211_tx_frags_bySTA(struct ieee80211_local *local,
 		u64 tsf= ops->get_tsf(&(local->hw),NULL);
 		int slot=tsf_to_slot(tsf);
 		bool data_slot=is_data_slot(slot,vif->type);
+
+		if(!data_slot){
+			static int notdataslot=0;
+			++notdataslot;
+			if(notdataslot==100){
+				printk("-------not data slot 100 times now--------\n");
+				notdataslot=0;
+			}
+		}
 		
 		if(local->queue_stop_reasons[q]||(!txpending)||(!data_slot)){
 			if(txpending){
@@ -1476,18 +1485,6 @@ static bool ieee80211_tx_frags_bySTA(struct ieee80211_local *local,
 				skb_queue_splice_tail_init(skbs,&local->pending[q]);
 			}
             spin_unlock_irqrestore(&local->queue_stop_reason_lock,flags);
-			return false;
-		}
-
-		if(canbuffer&&(!dataslot)){
-			skb_queue_splice_init(skbs,&local->pending[q]);
-			spin_unlock_irqrestore(&local->queue_stop_reason_lock,flags);
-			static int notdataslot=0;
-			++notdataslot;
-			if(notdataslot==100){
-				printk("-------not data slot 100 times now--------\n");
-				notdataslot=0;
-			}
 			return false;
 		}
 
