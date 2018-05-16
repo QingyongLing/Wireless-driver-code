@@ -472,14 +472,6 @@ static void ath_tx_complete_aggr(struct ath_softc *sc, struct ath_txq *txq,
 	memcpy(rates, bf->rates, sizeof(rates));
 
 	retries = ts->ts_longretry + 1;
-	//修改 2018.5.16
-	static int count = 0;
-	++count;
-	if(count==20){
-		count=0;
-        printk("---send long retry %d ---\n",retries);
-	}
-	
 	for (i = 0; i < ts->ts_rateindex; i++)
 		retries += rates[i].count;
 
