@@ -419,13 +419,13 @@ static int ar9003_hw_proc_txdesc(struct ath_hw *ah, void *ds,
 	ts->ts_shortretry = MS(status, AR_RTSFailCnt);
 	ts->ts_longretry = MS(status, AR_DataFailCnt);
 	//修改 2018.5.16
-	static int count = 0;
-	++count;
-	if(count==20){
-		count=0;
-		int retry=ts->ts_longretry + 1;
-        printk("---send long retry %d ---\n",retry);
-	}
+	//static int count = 0;
+	//++count;
+	//if(count==20){
+	//	count=0;
+	//	int retry=ts->ts_longretry + 1;
+    //    printk("---send long retry %d ---\n",retry);
+	//}
 	ts->ts_virtcol = MS(status, AR_VirtRetryCnt);
 
 	status = ACCESS_ONCE(ads->status7);
